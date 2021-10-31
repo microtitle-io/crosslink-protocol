@@ -15,7 +15,7 @@ function App() {
             We are currently in development, with alpha release planned December 2021. In the meantime, please read our &nbsp;
             <a
               className="App-link"
-              href="https://github.com/microtitle-io/crosslink-protocol/blob/main/docs/crosslink-protocol-v0.1a.pdf"
+              href="https://github.com/microtitle-io/crosslink-protocol/blob/main/docs/crosslink-protocol-v0.1b.pdf"
               target="_blank"
               rel="noopener noreferrer"
             >
