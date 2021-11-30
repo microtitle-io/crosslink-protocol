@@ -1,10 +1,60 @@
 .App {
   text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  /* justify-content: center; */
+  font-size: calc(10px + 2vmin);
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: white;
+}
+
+/* h1 {
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+} */
+
+a {
+  color: #5942bf;
+}
+
+a:visited {
+  color: #5942bf;
+}
+
+.nav {
+  background-color: #15171b;
+  list-style-type: none;
+  text-align: center; 
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  vertical-align: middle
+}
+
+.nav li {
+  display: inline-block;
+  vertical-align: middle;
+  color: white;
+  font-size: 20px;
+  padding: 20px;
 }
 
 .App-logo {
+  display: block;
+  padding: 10px,10px,10px,10px;
+  background-color: #282c34;
   height: 40vmin;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -13,16 +63,6 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
 .Text {
   font-size: calc(10px + 1vmin); /* calc(10px + 2vmin); */
   max-width: 60%;
