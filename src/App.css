@@ -37,18 +37,21 @@ a:visited {
   display: inline-block;
   vertical-align: middle;
   color: white;
-  font-size: 20px;
+  font-size: calc(10px + 1vmin);
   padding: 20px;
 }
 
 .App-logo {
   display: block;
   padding: 10px,10px,10px,10px;
-  background-color: #282c34;
-  height: 40vmin;
+  scale: 100%;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+}
+
+.qrcode {
+  align-content: center;
 }
 
 .center {
@@ -63,11 +66,51 @@ a:visited {
   }
 }
 
-.Text {
+.text {
   font-size: calc(10px + 1vmin); /* calc(10px + 2vmin); */
   max-width: 60%;
   color: white;
+  margin: 10px;
+  align-content: center;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.how {
+  text-align: center;
+  color: white;
+  max-width: 60%;
+  font-size: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.how li {
+  list-style-type: none;
+  max-width: 50%;
+  /*text-align: left; */
+  padding-left: 25%;
+  padding-right: 25%;
+}
+
 .App-link {
   color: #6170fb;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  text-align: center;
+  background-color: #15171b;
+  list-style-type: none;
+  vertical-align: middle
+}
+
+.footer li {
+  display: inline-block;
+  list-style-type: none;
+  font-size: calc(10px + 0.5vmin);
+  padding: 20px;
 }

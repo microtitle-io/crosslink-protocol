@@ -7,13 +7,16 @@ function NavBar() {
         <div className="nav">
         <ul>
             <li>
-                <img src={logo} className="App-logo" class="center" alt="logo" />
+                <img src={logo} className="App-logo" alt="logo" />
             </li>
             <li>
                 <Link to="/">Home</Link>
             </li>
             <li>
                 <Link to="/sign">Sign</Link>
+            </li>
+            <li>
+                <Link to="mint">Mint</Link>
             </li>
             <li>
                 <Link to="/verify">Verify</Link>
