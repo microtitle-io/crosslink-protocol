@@ -1,10 +1,63 @@
 .App {
   text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  /* justify-content: center; */
+  font-size: calc(10px + 2vmin);
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: white;
+}
+
+/* h1 {
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+} */
+
+a {
+  color: #5942bf;
+}
+
+a:visited {
+  color: #5942bf;
+}
+
+.nav {
+  background-color: #15171b;
+  list-style-type: none;
+  text-align: center; 
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  vertical-align: middle
+}
+
+.nav li {
+  display: inline-block;
+  vertical-align: middle;
+  color: white;
+  font-size: calc(10px + 1vmin);
+  padding: 20px;
 }
 
 .App-logo {
-  height: 40vmin;
+  display: block;
+  padding: 10px,10px,10px,10px;
+  scale: 100%;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
+}
+
+.qrcode {
+  align-content: center;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -13,21 +66,51 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-.Text {
+.text {
   font-size: calc(10px + 1vmin); /* calc(10px + 2vmin); */
   max-width: 60%;
   color: white;
+  margin: 10px;
+  align-content: center;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.how {
+  text-align: center;
+  color: white;
+  max-width: 60%;
+  font-size: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.how li {
+  list-style-type: none;
+  max-width: 50%;
+  /*text-align: left; */
+  padding-left: 25%;
+  padding-right: 25%;
+}
+
 .App-link {
   color: #6170fb;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  text-align: center;
+  background-color: #15171b;
+  list-style-type: none;
+  vertical-align: middle
+}
+
+.footer li {
+  display: inline-block;
+  list-style-type: none;
+  font-size: calc(10px + 0.5vmin);
+  padding: 20px;
 }
