@@ -10,14 +10,16 @@ import Verify from './components/Verify';
 import About from './components/About';
 import Footer from './components/Footer';
 
+import Wallet from './components/Wallet';
 
+import React, { useContext } from 'react';
 
-import React, { useEffect, useMemo, useState } from 'react';
+//const walletContext = React.createContext();
 
 function App() {
   return (
     <div className="App">
-        <NavBar />
+      <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign" element={<Sign />} />

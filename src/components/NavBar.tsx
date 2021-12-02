@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from "../logo.png";
+import Wallet from './Wallet';
 
 function NavBar() {
     return (
@@ -23,6 +24,9 @@ function NavBar() {
             </li>
             <li>
                 <Link to="/about">About</Link>
+            </li>
+            <li>
+                <Wallet />
             </li>
         </ul>
         </div>

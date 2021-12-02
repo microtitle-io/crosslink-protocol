@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import bs58 from 'bs58';
+import nacl from 'tweetnacl';
+import { SendOneLamportToRandomAddress } from './walletTest';
 
 function Verify() {
     return (
-        <>
-            <div>
-                <h1>{`{ Verify }`}</h1>
+        <div>
+            <h1>{`{ Verify }`}</h1>
+            <div className="text">
+                <SendOneLamportToRandomAddress />
             </div>
-            <div className="how">
-                <h2>COMING SOON&#8482;</h2>
-            </div>
-        </>
+        </div>
     )
 }
 
