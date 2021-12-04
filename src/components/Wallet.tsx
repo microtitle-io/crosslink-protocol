@@ -1,56 +1,65 @@
-import React, { FC, useMemo, useContext } from 'react';
+import { WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base';
+import { WalletDialogProvider } from '@solana/wallet-adapter-material-ui';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
     getLedgerWallet,
     getPhantomWallet,
-    getSlopeWallet,
     getSolflareWallet,
-    getSolletExtensionWallet,
     getSolletWallet,
-    getTorusWallet,
+    getSolletExtensionWallet,
 } from '@solana/wallet-adapter-wallets';
-import {
-    WalletModalProvider,
-    WalletDisconnectButton,
-    WalletMultiButton
-} from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
+import { useSnackbar } from 'notistack';
+import React, { FC, useCallback, useMemo } from 'react';
+import Navigation from './Navigation';
 
-// Default styles that can be overridden by your app
-require('@solana/wallet-adapter-react-ui/styles.css');
+const getCluster = (network: string) => {
+  if (network === 'localnet') return 'http://localhost:8899';
+  //return clusterApiUrl(network);
+  throw new Error('Not implemented')
+}
 
-export const Wallet: FC = () => {
-    // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-    const network = WalletAdapterNetwork.Devnet;
+const Wallet: FC = ({children}) => {
+  const network = 'localnet'; // WalletAdapterNetwork.Devnet;
+  const endpoint = useMemo(() => getCluster(network), [network]);
 
-    // You can also provide a custom RPC endpoint
-    const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-
-    // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking --
-    // Only the wallets you configure here will be compiled into your application
-    const wallets = useMemo(() => [
+  // @solana/wallet-adapter-wallets imports all the adapters but supports tree shaking --
+  // Only the wallets you want to support will be compiled into your application
+  const wallets = useMemo(
+    () => [
         getPhantomWallet(),
         getSolflareWallet(),
+        //@ts-ignore
         getSolletWallet({ network }),
-        getLedgerWallet(),
+        //@ts-ignore
         getSolletExtensionWallet({ network }),
-        getSlopeWallet(),
-        getTorusWallet({
-            options: { clientId: 'Get a client ID @ https://developer.tor.us' }
-        })
-,
-    ], [network]);
+        getLedgerWallet(),
+    ],
+    [network]
+  );
 
-    return (
-        <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} autoConnect>
-                <WalletModalProvider>
-                    <WalletMultiButton />
-                </WalletModalProvider>
-            </WalletProvider>
-        </ConnectionProvider>
-    );
+//  const { enqueueSnackbar } = useSnackbar();
+//  const onError = useCallback(
+//    (error: WalletError) => {
+//        enqueueSnackbar(error.message ? `${error.name}: ${error.message}` : error.name, { variant: 'error' });
+//        console.error(error);
+//    },
+//    [enqueueSnackbar]
+//  );
+
+
+
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+        {/*<WalletProvider wallets={wallets} onError={onError} autoConnect>*/}
+        <WalletProvider wallets={wallets} autoConnect>
+            <WalletDialogProvider>
+                <Navigation />
+                {children}
+            </WalletDialogProvider>
+        </WalletProvider>
+    </ConnectionProvider>
+  );
 };
 
 export default Wallet;
