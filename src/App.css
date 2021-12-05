@@ -107,6 +107,16 @@ a:visited {
   padding-right: 25%;
 }
 
+.sign {
+  text-align: left;
+  color: white;
+  max-width: 60%;
+  font-size: calc(10px + 1vmin); /* calc(10px + 2vmin); */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
 .App-link {
   color: #6170fb;
   text-decoration: none;

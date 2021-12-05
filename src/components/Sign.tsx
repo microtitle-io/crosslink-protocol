@@ -23,10 +23,6 @@ import {
   } from '@solana/web3.js';
 
 import Wallet from './Wallet';
-import { SingleBedTwoTone } from '@material-ui/icons';
-
-
-
 
 export interface AnchorWallet {
     publicKey: PublicKey;
@@ -67,25 +63,25 @@ function Sign() {
     const [imageUrl, setImageUrl] = useState('');
     const [outputSignature, displaySignature] = useState(''); 
     const [outputMessageHash, displayMessageHash] = useState('');
-//    const pubkey = new PublicKey('');
-
-//    const address = pubkey.toBase58;
 
     const wallet = useAnchorWallet();
     const pubkey = wallet?.publicKey;
 
-//        const pubkey = wallet?.publicKey;
         const message = customMessage;
-//        const message = "hello world";
-        const messageUint8 = decodeUTF8(message);
-        const messageHashUint8: Uint8Array = nacl.hash(messageUint8);
-        const messageHashBase58 = bs58.encode(messageHashUint8);
+
+
 
 async function signMsg() {
     try {
         if (!wallet) {
           throw new Error('wallet not connected');
         }
+
+        // get the message and SHA512 hash it w/ nacl.hash() 
+        const messageUint8 = decodeUTF8(message);
+        const messageHashUint8: Uint8Array = nacl.hash(messageUint8);
+        displayMessageHash(bs58.encode(messageHashUint8));
+
         const signed = await (wallet?.signMessage(messageHashUint8, 'hex'));
         displaySignature(bs58.encode(signed));
         //setSignatureArray(signed);
@@ -100,9 +96,18 @@ async function signMsg() {
             <div>
                 <h1>{`{ Generate Signature }`}</h1>
             </div>
-            <div className="how">
-                <h2>{pubkey?.toString()}</h2>
+            <div className="sign">
                 <div className="text">
+                    Create and connect a *unique* and *unused* keypair to generate signature of the bonded item. 1 keypair = 1 item. Again, do not reuse addresses! <br/>
+                    { pubkey ? (
+                        <div>
+                            Bonding keypair public key: {pubkey?.toString()}
+                        </div>
+                    ) : (
+                        <br/>
+                    )
+                    }
+                    <br/>
                     Message to sign:{' '}
                     <input
                         type="text"
@@ -110,8 +115,16 @@ async function signMsg() {
                         onChange={(e) => setCustomMessage(e.target.value.trim())}
                     />
                     <button onClick={signMsg}>Sign Message</button> <br/>
-                    messageHash: {messageHashBase58} <br/>
-                    signature: {outputSignature} <br/>
+                    {outputSignature ? (
+                        <div>
+                            messageHash: {outputMessageHash} <br/>
+                            signature: {outputSignature} <br/>
+                        </div>
+                    ) : (
+                        <div>
+                            sign a message!
+                        </div>
+                    )}
                     <div className="logs">
                         {logs.map((log, i) => (
                             <div key={i}>{log}</div>
