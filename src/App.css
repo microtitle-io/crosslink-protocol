@@ -1,7 +1,9 @@
 .App {
   text-align: center;
   background-color: #282c34;
-  min-height: 100vh;
+  /*min-height: 100vh;*/
+  min-height: 100%;
+  position: relative;
   display: flex;
   flex-direction: column;
   /* align-items: center; */
@@ -11,19 +13,39 @@
   color: white;
 }
 
+.body {
+  margin-bottom: 100px;
+  min-height: 65vh;
+}
+
+.wallet {
+  justify-content: right;
+ /*  background-color: #15171b; */
+}
+.wallet li {
+  list-style-type: none;
+  display: inline-block;
+  vertical-align: middle;
+
+}
+
 /* h1 {
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 } */
 
 a {
   color: #5942bf;
+  text-decoration: none;
 }
 
 a:visited {
   color: #5942bf;
+  text-decoration: none;
 }
 
 .nav {
+  position: relative;
+  top: 0;
   background-color: #15171b;
   list-style-type: none;
   text-align: center; 
@@ -38,7 +60,7 @@ a:visited {
   vertical-align: middle;
   color: white;
   font-size: calc(10px + 1vmin);
-  padding: 20px;
+  padding: 15px;
 }
 
 .App-logo {
@@ -52,6 +74,8 @@ a:visited {
 
 .qrcode {
   align-content: center;
+  width: 125px; 
+  height: 125px;
 }
 
 .center {
@@ -67,7 +91,7 @@ a:visited {
 }
 
 .text {
-  font-size: calc(10px + 1vmin); /* calc(10px + 2vmin); */
+  font-size: calc(7.5px + 1vmin);
   max-width: 60%;
   color: white;
   margin: 10px;
@@ -76,30 +100,20 @@ a:visited {
   margin-right: auto;
 }
 
-.how {
-  text-align: center;
-  color: white;
-  max-width: 60%;
-  font-size: 20px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.how li {
+.resources {
   list-style-type: none;
-  max-width: 50%;
-  /*text-align: left; */
-  padding-left: 25%;
-  padding-right: 25%;
 }
 
 .App-link {
   color: #6170fb;
+  text-decoration: none;
 }
 
 .footer {
-  position: fixed;
-  left: 0;
+  position: absolute;
   bottom: 0;
+  height: 100px;
+  left: 0;
   width: 100%;
   color: white;
   text-align: center;

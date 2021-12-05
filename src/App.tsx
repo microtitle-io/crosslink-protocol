@@ -9,15 +9,17 @@ import Mint from './components/Mint';
 import Verify from './components/Verify';
 import About from './components/About';
 import Footer from './components/Footer';
+import Wallet from './components/Wallet';
 
+import React, { useContext, FC } from 'react';
 
+//const walletContext = React.createContext();
 
-import React, { useEffect, useMemo, useState } from 'react';
-
-function App() {
+const App: FC = () => {
   return (
     <div className="App">
-        <NavBar />
+      <Wallet>
+      <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign" element={<Sign />} />
@@ -26,6 +28,7 @@ function App() {
         <Route path="/about" element={<About />} />
       </Routes>
       <Footer />
+      </Wallet>
     </div>
   );
 }
