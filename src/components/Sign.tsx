@@ -24,6 +24,8 @@ import {
 
 import Wallet from './Wallet';
 
+import QRCode from 'qrcode';
+
 export interface AnchorWallet {
     publicKey: PublicKey;
     signTransaction(transaction: Transaction): Promise<Transaction>;
@@ -48,15 +50,9 @@ function toHex(buffer: Buffer) {
       .join('');
   }
 
+
+
 function Sign() {
-
-    const [logs, setLogs] = useState<string[]>([]);
-    function addLog(log: string) {
-        setLogs((logs) => [...logs, log]);
-    }
-
-    // signing
-    const [signatureArray, setSignatureArray] = useState<Uint8Array>();
 
     // signature display
     const [customMessage, setCustomMessage] = useState('hello world');
@@ -67,29 +63,34 @@ function Sign() {
     const wallet = useAnchorWallet();
     const pubkey = wallet?.publicKey;
 
-        const message = customMessage;
+    const message = customMessage;
 
-
-
-async function signMsg() {
-    try {
-        if (!wallet) {
-          throw new Error('wallet not connected');
+    const generateQrCode = async (text: string) => {
+        try {
+          const response = await QRCode.toDataURL(text, { errorCorrectionLevel: 'M' });
+          setImageUrl(response);
+        } catch (error) {
+          console.log(error);
         }
-
-        // get the message and SHA512 hash it w/ nacl.hash() 
-        const messageUint8 = decodeUTF8(message);
-        const messageHashUint8: Uint8Array = nacl.hash(messageUint8);
-        displayMessageHash(bs58.encode(messageHashUint8));
-
-        const signed = await (wallet?.signMessage(messageHashUint8, 'hex'));
-        displaySignature(bs58.encode(signed));
-        //setSignatureArray(signed);
-    } catch (e) {
-        console.warn(e);
-        //addLog(`Error: ${(e as Error).message}`);
     }
-}            
+
+    async function signMsg() {
+        try {
+            if (!wallet) {
+              throw new Error('wallet not connected');
+            }
+            // get the message and SHA512 hash it w/ nacl.hash() 
+            const messageUint8 = decodeUTF8(message);
+            const messageHashUint8: Uint8Array = nacl.hash(messageUint8);
+            displayMessageHash(bs58.encode(messageHashUint8));
+
+            const signed = await (wallet?.signMessage(messageHashUint8, 'hex'));
+            displaySignature(bs58.encode(signed));
+            generateQrCode(bs58.encode(signed));
+        } catch (e) {
+            console.warn(e);
+        }
+    }            
 
     return (  
         <>
@@ -98,7 +99,8 @@ async function signMsg() {
             </div>
             <div className="sign">
                 <div className="text">
-                    Create and connect a *unique* and *unused* keypair to generate signature of the bonded item. 1 keypair = 1 item. Again, do not reuse addresses! <br/>
+                    Create and connect a *unique* and *unused* keypair to generate signature of the bonded item. 1 keypair = 1 item. Again, do not reuse addresses! 
+                    <br/>
                     { pubkey ? (
                         <div>
                             Bonding keypair public key: {pubkey?.toString()}
@@ -119,17 +121,15 @@ async function signMsg() {
                         <div>
                             messageHash: {outputMessageHash} <br/>
                             signature: {outputSignature} <br/>
+                            <br />
+                            Downloadable QR code: <br/>
+                            <a href={imageUrl} download><img src={imageUrl} alt="signature QR code"  /></a>
                         </div>
                     ) : (
                         <div>
                             sign a message!
                         </div>
                     )}
-                    <div className="logs">
-                        {logs.map((log, i) => (
-                            <div key={i}>{log}</div>
-                        ))}
-                    </div>
                 </div>
             </div>
         </>
