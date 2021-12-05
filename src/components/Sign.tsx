@@ -93,14 +93,17 @@ function Sign() {
     }            
 
     return (  
-        <>
-            <div>
+        <div className="body">
+            <div className="text">
                 <h1>{`{ Generate Signature }`}</h1>
-            </div>
-            <div className="sign">
                 <div className="text">
-                    Create and connect a *unique* and *unused* keypair to generate signature of the bonded item. 1 keypair = 1 item. Again, do not reuse addresses! 
-                    <br/>
+                    This section is used to create a signature that is permanently attached or embedded on your item.
+                    Tips to create the Bonding Keypair: 
+                    <ol className="how">
+                        <li>Create and connect a unique and unused keypair</li>
+                        <li>1 keypair = 1 item. </li>
+                        <li>Do not reuse addresses! </li>
+                    </ol>
                     { pubkey ? (
                         <div>
                             Bonding keypair public key: {pubkey?.toString()}
@@ -132,7 +135,7 @@ function Sign() {
                     )}
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 export default Sign;
