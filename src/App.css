@@ -78,6 +78,28 @@ a:visited {
   height: 125px;
 }
 
+.qrreader {
+  align-content: center;
+  text-align: center;
+  width: 250px; 
+  height: 250px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.row {
+  display: flex;
+}
+
+.column {
+  flex: 50% ;
+}
+
 .center {
   display: block;
   margin-left: auto;
