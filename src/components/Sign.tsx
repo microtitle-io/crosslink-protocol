@@ -95,14 +95,15 @@ function Sign() {
     return (  
         <div className="body">
             <div className="text">
-                <h1>{`{ Generate Signature }`}</h1>
+                <h1>{`{ Sign }`}</h1>
                 <div className="text">
-                    This section is used to create a signature that is permanently attached or embedded on your item.
-                    Tips to create the Bonding Keypair: 
+                    This section is used to generate a signature that is permanently attached to or embedded on your item. 
+                    To do this, you must first create a unique "bonding" keypair. Tips to create the Keypair: 
                     <ol className="how">
                         <li>Create and connect a unique and unused keypair</li>
-                        <li>1 keypair = 1 item. </li>
+                        <li>1 keypair = 1 item </li>
                         <li>Do not reuse addresses! </li>
+                        <li>Connect keypair with the Crosslink web app using a wallet like Sollet, or Phantom</li>
                     </ol>
                     { pubkey ? (
                         <div>

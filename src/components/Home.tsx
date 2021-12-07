@@ -11,7 +11,7 @@ function Home() {
                     <h2>How does it work?</h2>
                     <img src={qrcode} className="qrcode" alt="Example QR code signature." />
                     <ol>
-                        <li>Create a "linking" keypair</li>
+                        <li>Create a "bonding" keypair</li>
                         <li>Generate signature (2D QR code)</li>
                         <li>Permanently attach signature to item</li>
                         <li>Mint the NFT "microtitle"</li>
