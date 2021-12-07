@@ -1,13 +1,11 @@
+// Attribution: qrscanner code adapted from this very helpful youtube video by Heart of Programming: https://www.youtube.com/watch?v=7Ntot5ClGIY
+
 import React, { useEffect, useMemo, useState } from 'react';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
 import QrReader from 'react-qr-reader';
 
-// qrscanner code adapted from this very helpful youtube video by Heart of Programming: https://www.youtube.com/watch?v=7Ntot5ClGIY
-
-
 function Verify(): JSX.Element {
-
 
     // signature verification input fields
     const [inputMessageHash, setMessageHash] = useState('');
