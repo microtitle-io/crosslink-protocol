@@ -15,7 +15,7 @@ function Mint() {
                         <li>Select "Create"</li>
                         <li>Upload artwork, preferably something fun, collectible, and representative of the real-world item</li>
                         <li>When you get to the "describe your item" section, click on the "Add attribute" button</li>
-                        <li>Add three attributes with the following trait_type: pubkey, message, and message_hash</li>
+                        <li>Add two attributes with the following trait_type: pubkey, and message</li>
                         <li>Paste the corresponding values [for each trait type above] that you obtained from signature generator on our Sign page</li>
                         <li>Fill out the remaining info, royalties, etc, and mint the NFT!</li>
                     </ol> 

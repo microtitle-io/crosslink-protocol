@@ -4,12 +4,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
 import QrReader from 'react-qr-reader';
+import { decodeUTF8 } from 'tweetnacl-util';
 
 function Verify(): JSX.Element {
 
     // signature verification input fields
-    const [inputMessageHash, setMessageHash] = useState('');
-    const [inputSignature, setInputSignature] = useState('paste or use QR scanner');
+    const [inputMessage, setMessage] = useState('');
+    const [inputSignature, setInputSignature] = useState('');
     const [inputPubkey, setInputPubkey] = useState('');
     const [sigVerified, setSigVerified] = useState('N/A');
 
@@ -19,11 +20,12 @@ function Verify(): JSX.Element {
 
     async function verifyItem() {
         try {
-            if (!inputMessageHash) {
+            if (!inputMessage) {
                 throw new Error('no signature provided.');
         }
-        const messageHash: string = inputMessageHash;
-        const messageHashArray = new Uint8Array(bs58.decode(messageHash));
+        const message: string = inputMessage;
+        //const messageArray = new Uint8Array(bs58.decode(message));
+        const messageArray = new Uint8Array(decodeUTF8(message));
         const signatureBase58: string = inputSignature;
         const signatureArray = new Uint8Array(bs58.decode(signatureBase58));
     
@@ -31,7 +33,7 @@ function Verify(): JSX.Element {
         const pubKeyArray = new Uint8Array(bs58.decode(pubkeyBase58));
     
         // assemble all of the components, perform the detached verify of signed message.
-        const verified = await nacl.sign.detached.verify(messageHashArray, signatureArray, pubKeyArray);
+        const verified = await nacl.sign.detached.verify(messageArray, signatureArray, pubKeyArray);
         setSigVerified(verified.toString());
       } catch (e) {
         console.warn(e);
@@ -40,7 +42,7 @@ function Verify(): JSX.Element {
 
     function resetFields() {
         setInputPubkey('');
-        setMessageHash('');
+        setMessage('');
         setInputSignature('');
         setSigVerified('N/A');
         
@@ -63,10 +65,10 @@ function Verify(): JSX.Element {
           <div className="text">
             <h1>{`{ Verify }`}</h1>
               <h3>Manual Verify:</h3>
-              The current system requires manual verification of the signature and the NFT metadata (bonding keypair public key and message hash). 
+              The current system requires manual verification of the signature and the NFT metadata (bonding keypair public key and message). 
               We are working quickly to enable the data to be read directly from an NFT within a connected wallet, but it's not quite ready yet. 
-              For now, 1) copy-paste the NFT metadata's "pubkey" and "message_hash" traits into the data fields below, 2) use a webcam to scan the QR code signature
-              for your item, then 3) click "verify" button. Output will show "Ver verified (t/f): true if the item is valid."  <br/>
+              For now, 1) copy-paste the NFT metadata's "pubkey" and "message" traits into the data fields below, 2) use a webcam to scan the QR code signature
+              for your item, then 3) click "verify" button. Output will show "Signature verified: true" if the item is valid.  <br/>
               <br/>
             <div className="row">
               <div className="column">
@@ -83,12 +85,12 @@ function Verify(): JSX.Element {
                     </td>
                 </tr>
                 <tr>
-                  <td>Message Hash: {' '}</td>
+                  <td>Message: {' '}</td>
                   <td>
                     <input
                       type="text"
-                      value={inputMessageHash}
-                      onChange={(e) => setMessageHash(e.target.value.trim())}
+                      value={inputMessage}
+                      onChange={(e) => setMessage(e.target.value.trim())}
                     />
                   </td>
                 </tr>

@@ -58,7 +58,7 @@ function Sign() {
     const [customMessage, setCustomMessage] = useState('hello world');
     const [imageUrl, setImageUrl] = useState('');
     const [outputSignature, displaySignature] = useState(''); 
-    const [outputMessageHash, displayMessageHash] = useState('');
+    const [signedMessage, displaySignedMessage] = useState('');
 
     const wallet = useAnchorWallet();
     const pubkey = wallet?.publicKey;
@@ -79,12 +79,15 @@ function Sign() {
             if (!wallet) {
               throw new Error('wallet not connected');
             }
-            // get the message and SHA512 hash it w/ nacl.hash() 
+             
             const messageUint8 = decodeUTF8(message);
-            const messageHashUint8: Uint8Array = nacl.hash(messageUint8);
-            displayMessageHash(bs58.encode(messageHashUint8));
+            //If you want to SHA512 hash the message w/ nacl.hash() instead of plain text, use the following:
+            //const messageHashUint8: Uint8Array = nacl.hash(messageUint8);
+            //displayMessageHash(bs58.encode(messageHashUint8));
+            displaySignedMessage(encodeUTF8(messageUint8));
 
-            const signed = await (wallet?.signMessage(messageHashUint8, 'hex'));
+            //const signed = await (wallet?.signMessage(messageHashUint8, 'hex'));
+            const signed = await (wallet?.signMessage(messageUint8, 'hex'));
             displaySignature(bs58.encode(signed));
             generateQrCode(bs58.encode(signed));
         } catch (e) {
@@ -123,7 +126,7 @@ function Sign() {
                     <button onClick={signMsg}>Sign Message</button> <br/>
                     {outputSignature ? (
                         <div>
-                            messageHash: {outputMessageHash} <br/>
+                            signedMessage: {signedMessage} <br/>
                             signature: {outputSignature} <br/>
                             <br />
                             Downloadable QR code: <br/>
