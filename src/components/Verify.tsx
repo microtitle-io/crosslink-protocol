@@ -6,17 +6,89 @@ import nacl from 'tweetnacl';
 import QrReader from 'react-qr-reader';
 import { decodeUTF8 } from 'tweetnacl-util';
 
-function Verify(): JSX.Element {
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  SystemProgram,
+  SYSVAR_RENT_PUBKEY,
+  Transaction,
+  clusterApiUrl,
+  Message,
+  AccountInfo
+} from '@solana/web3.js';
+
+const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+
+export interface AnchorWallet {
+  publicKey: PublicKey;
+  signTransaction(transaction: Transaction): Promise<Transaction>;
+  signAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
+  signMessage(message: Uint8Array, display: unknown): Promise<Uint8Array>;
+}
+
+export function useAnchorWallet(): AnchorWallet | undefined {
+  const { publicKey, signTransaction, signAllTransactions, signMessage } = useWallet();
+  return useMemo(
+      () =>
+          publicKey && signTransaction && signAllTransactions && signMessage
+              ? { publicKey, signTransaction, signAllTransactions, signMessage }
+              : undefined,
+      [publicKey, signTransaction, signAllTransactions, signMessage]
+  );
+}
+
+export default function Verify(): JSX.Element {
+
+  // use anchor wallet
+  const wallet = useAnchorWallet();
+  const pubkey = wallet?.publicKey;
+  const MY_WALLET_ADDRESS = wallet?.publicKey.toString() || '';
 
     // signature verification input fields
     const [inputMessage, setMessage] = useState('');
     const [inputSignature, setInputSignature] = useState('');
     const [inputPubkey, setInputPubkey] = useState('');
+    const [accountMints, setAccountMints] = useState(['']); // NEED TO FIX THIS. YOU ARE CLOSE
     const [sigVerified, setSigVerified] = useState('N/A');
+    const [selectedMint, setSelectedMint] = useState('');
 
     //webcam states
     const [scanResultWebCam, setScanResultWebCam] = useState('');
 
+    const getMints = async () => {
+
+        //const MY_WALLET_ADDRESS = "ADuxVFACU3yjodWnTrSDqq1Xua2qNpDvLsiGv8xXtCrh";
+        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+    
+        const accounts = await connection.getParsedProgramAccounts(
+        TOKEN_PROGRAM_ID, // new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
+        {
+          filters: [
+            {
+              dataSize: 165, // number of bytes
+            },
+            {
+              memcmp: {
+                offset: 32, // number of bytes
+                bytes: MY_WALLET_ADDRESS, // base58 encoded string
+              },
+            },
+          ],
+        }
+      );
+
+      const mints: string[] = [];
+
+      accounts.forEach((account, i) => {
+        //const mint_id = account.pubkey.toString(); // THIS IS JUST THE TOKEN ACCOUNT ADDRESS, NOT MINT ID!
+        const mint_id = `${account.account.data["parsed"]["info"]["mint"]}`;
+        //const mint_id = `${i}`;
+        mints.push(mint_id);
+      });
+      setAccountMints(mints);
+    }
 
     async function verifyItem() {
         try {
@@ -45,6 +117,7 @@ function Verify(): JSX.Element {
         setMessage('');
         setInputSignature('');
         setSigVerified('N/A');
+        setAccountMints([]);
         
     }
 
@@ -59,7 +132,6 @@ function Verify(): JSX.Element {
       }
     }
 
-
     return (
       <div className="body">
           <div className="text">
@@ -73,6 +145,24 @@ function Verify(): JSX.Element {
             <div className="row">
               <div className="column">
               <h3>Enter NFT Data:</h3>
+              <div>
+              { pubkey ? (
+                        <div>
+                            Connected wallet: {pubkey?.toString()}
+                            <div>
+                            <button onClick={getMints}>getMints</button><br/>
+                              connected mints:<br/>
+                              <select name="selectMintId" id="selectMintId">
+                                { accountMints.map(item => <option value={item} onChange={(e) => setSelectedMint(item)}> {item} </option>)}
+                              </select><br/>
+                              <div>selected mint id: {selectedMint}</div>
+                            </div>
+                        </div>
+                    ) : (
+                        <br/>
+                    )
+              }
+              </div>
                 <table className="table">
                   <tr>
                     <td>Public Key:</td> 
@@ -152,4 +242,4 @@ function Verify(): JSX.Element {
     )
 }
 
-export default Verify;
+//export default Verify;
