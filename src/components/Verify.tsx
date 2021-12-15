@@ -128,6 +128,7 @@ export default function Verify() {
         setInputSignature('');
         setSigVerified('N/A');
         setAccountMints([]);
+        setSelectedOption('');
     }
 
     const handleErrorWebCam = (error: string) => {
@@ -153,8 +154,7 @@ export default function Verify() {
               <br/>
             <div className="row">
               <div className="column">
-              <h3>Enter NFT Data:</h3>
-              <div>
+              <h3>Mint Data:</h3>
               { pubkey ? (
                         <div>
                             Connected wallet: {pubkey?.toString()}
@@ -162,6 +162,7 @@ export default function Verify() {
                             <button onClick={getMints}>getMints</button><br/>
                               connected mints:<br/>
                               <select id="selectMintId" onChange={selectChange}>
+                              <option selected disabled>SELECT MINT ID TO VERIFY</option>
                                 { accountMints.map(item => <option value={item}> {item} </option>)}
                               </select><br/>
                               <div>selected mint id: {selectedOption}</div>
@@ -172,6 +173,9 @@ export default function Verify() {
                     )
               }
               </div>
+              <div className="column">
+              <h3>Enter NFT Data:</h3>
+
                 <table className="table">
                   <tr>
                     <td>Public Key:</td> 
