@@ -69,7 +69,7 @@ export default function Verify() {
     const getMints = async () => {
 
         //const connectedWalletAddress = "ADuxVFACU3yjodWnTrSDqq1Xua2qNpDvLsiGv8xXtCrh";
-        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+        const connection = new Connection(clusterApiUrl("devnet"), "confirmed"); // devnet currently hardcoded --> need a menu to select the network
     
         const accounts = await connection.getParsedProgramAccounts(
         TOKEN_PROGRAM_ID, // new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
@@ -91,9 +91,10 @@ export default function Verify() {
       const mints: string[] = [];
 
       accounts.forEach((account, i) => {
-        const mint_id = account.pubkey.toString(); // THIS IS JUST THE TOKEN ACCOUNT ADDRESS, NOT MINT ID!
-        //const mint_id = `${account.account.data["parsed"]["info"]["mint"]}`;
-        //const mint_id = `${i}`;
+        //const mint_id = account.pubkey.toString(); // THIS IS JUST THE TOKEN ACCOUNT ADDRESS, NOT MINT ID!
+        // you had to set compiler option
+        const mint_id = account.account.data["parsed"]["info"]["mint"];
+        //const mint_id = `${account.account.data.toString()}`;
         mints.push(mint_id);
       });
       setAccountMints(mints);
