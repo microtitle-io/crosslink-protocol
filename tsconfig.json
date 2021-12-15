@@ -9,7 +9,7 @@
     ],
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "strictNullChecks": true,
+    "strictNullChecks": true, // this is for the setMints select menu thing. Not proper!
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

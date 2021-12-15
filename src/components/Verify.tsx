@@ -39,12 +39,12 @@ export function useAnchorWallet(): AnchorWallet | undefined {
   );
 }
 
-export default function Verify(): JSX.Element {
+export default function Verify() {
 
   // use anchor wallet
   const wallet = useAnchorWallet();
   const pubkey = wallet?.publicKey;
-  const MY_WALLET_ADDRESS = wallet?.publicKey.toString() || '';
+  const connectedWalletAddress = wallet?.publicKey.toString() || '';
 
     // signature verification input fields
     const [inputMessage, setMessage] = useState('');
@@ -52,14 +52,23 @@ export default function Verify(): JSX.Element {
     const [inputPubkey, setInputPubkey] = useState('');
     const [accountMints, setAccountMints] = useState(['']); // NEED TO FIX THIS. YOU ARE CLOSE
     const [sigVerified, setSigVerified] = useState('N/A');
-    const [selectedMint, setSelectedMint] = useState('');
+    const [selectedOption, setSelectedOption] = useState<String>();
 
     //webcam states
     const [scanResultWebCam, setScanResultWebCam] = useState('');
 
+
+
+    // This function is triggered when the select changes
+    // example source from here: https://www.kindacode.com/article/react-typescript-handling-select-onchange-event/ 
+    const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = event.target.value;
+      setSelectedOption(value);
+    };
+
     const getMints = async () => {
 
-        //const MY_WALLET_ADDRESS = "ADuxVFACU3yjodWnTrSDqq1Xua2qNpDvLsiGv8xXtCrh";
+        //const connectedWalletAddress = "ADuxVFACU3yjodWnTrSDqq1Xua2qNpDvLsiGv8xXtCrh";
         const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     
         const accounts = await connection.getParsedProgramAccounts(
@@ -72,7 +81,7 @@ export default function Verify(): JSX.Element {
             {
               memcmp: {
                 offset: 32, // number of bytes
-                bytes: MY_WALLET_ADDRESS, // base58 encoded string
+                bytes: connectedWalletAddress, // base58 encoded string
               },
             },
           ],
@@ -82,8 +91,8 @@ export default function Verify(): JSX.Element {
       const mints: string[] = [];
 
       accounts.forEach((account, i) => {
-        //const mint_id = account.pubkey.toString(); // THIS IS JUST THE TOKEN ACCOUNT ADDRESS, NOT MINT ID!
-        const mint_id = `${account.account.data["parsed"]["info"]["mint"]}`;
+        const mint_id = account.pubkey.toString(); // THIS IS JUST THE TOKEN ACCOUNT ADDRESS, NOT MINT ID!
+        //const mint_id = `${account.account.data["parsed"]["info"]["mint"]}`;
         //const mint_id = `${i}`;
         mints.push(mint_id);
       });
@@ -118,7 +127,6 @@ export default function Verify(): JSX.Element {
         setInputSignature('');
         setSigVerified('N/A');
         setAccountMints([]);
-        
     }
 
     const handleErrorWebCam = (error: string) => {
@@ -152,10 +160,10 @@ export default function Verify(): JSX.Element {
                             <div>
                             <button onClick={getMints}>getMints</button><br/>
                               connected mints:<br/>
-                              <select name="selectMintId" id="selectMintId">
-                                { accountMints.map(item => <option value={item} onChange={(e) => setSelectedMint(item)}> {item} </option>)}
+                              <select id="selectMintId" onChange={selectChange}>
+                                { accountMints.map(item => <option value={item}> {item} </option>)}
                               </select><br/>
-                              <div>selected mint id: {selectedMint}</div>
+                              <div>selected mint id: {selectedOption}</div>
                             </div>
                         </div>
                     ) : (
