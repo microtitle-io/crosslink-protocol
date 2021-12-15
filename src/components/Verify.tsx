@@ -16,7 +16,8 @@ import {
   Transaction,
   clusterApiUrl,
   Message,
-  AccountInfo
+  AccountInfo,
+  Cluster
 } from '@solana/web3.js';
 
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
@@ -53,23 +54,34 @@ export default function Verify() {
     const [accountMints, setAccountMints] = useState(['']); // NEED TO FIX THIS. YOU ARE CLOSE
     const [sigVerified, setSigVerified] = useState('N/A');
     const [selectedOption, setSelectedOption] = useState<String>();
-
+    const [selectedNetwork, setSelectedNetwork] = useState('');
     //webcam states
     const [scanResultWebCam, setScanResultWebCam] = useState('');
 
 
 
-    // This function is triggered when the select changes
-    // example source from here: https://www.kindacode.com/article/react-typescript-handling-select-onchange-event/ 
-    const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+
+
+    // Select the network to draw on-chain data from:
+    const selectNetwork = (event: React.ChangeEvent<HTMLSelectElement>) => {
       const value = event.target.value;
-      setSelectedOption(value);
+      if (value === "devnet") {
+        const url = clusterApiUrl("devnet");
+        setSelectedNetwork(url);
+      }
+      else if (value === "mainnet-beta") {
+        const url = clusterApiUrl("mainnet-beta");
+        setSelectedNetwork(url);
+      }
+      else if (value === "testnet") {
+        const url = clusterApiUrl("testnet");
+        setSelectedNetwork(url);
+      }
     };
 
     const getMints = async () => {
 
-        //const connectedWalletAddress = "ADuxVFACU3yjodWnTrSDqq1Xua2qNpDvLsiGv8xXtCrh";
-        const connection = new Connection(clusterApiUrl("devnet"), "confirmed"); // devnet currently hardcoded --> need a menu to select the network
+        const connection = new Connection(selectedNetwork, "confirmed");
     
         const accounts = await connection.getParsedProgramAccounts(
         TOKEN_PROGRAM_ID, // new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
@@ -100,6 +112,13 @@ export default function Verify() {
       setAccountMints(mints);
     }
 
+    // Drop-down menu handling for selected Mint ID
+    // example source from here: https://www.kindacode.com/article/react-typescript-handling-select-onchange-event/ 
+    const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = event.target.value;
+      setSelectedOption(value);
+    };
+
     async function verifyItem() {
         try {
             if (!inputMessage) {
@@ -129,6 +148,7 @@ export default function Verify() {
         setSigVerified('N/A');
         setAccountMints([]);
         setSelectedOption('');
+        setSelectedNetwork('');
     }
 
     const handleErrorWebCam = (error: string) => {
@@ -146,11 +166,10 @@ export default function Verify() {
       <div className="body">
           <div className="text">
             <h1>{`{ Verify }`}</h1>
-              <h3>Manual Verify:</h3>
-              The current system requires manual verification of the signature and the NFT metadata (bonding keypair public key and message). 
-              We are working quickly to enable the data to be read directly from an NFT within a connected wallet, but it's not quite ready yet. 
-              For now, 1) copy-paste the NFT metadata's "pubkey" and "message" traits into the data fields below, 2) use a webcam to scan the QR code signature
-              for your item, then 3) click "verify" button. Output will show "Signature verified: true" if the item is valid.  <br/>
+              <h3>Microtitle Verification Sequence:</h3>
+              The app compares the QR code signature of your physical item with corresponding signing data contained within the NFT's metadata--the bonding keypair public key and associated message. 
+              Steps: 1) Connect your wallet containing the NFT "microtitle" you want to verify. 2) Select the appropriate network, 3) click "get mints" button, 4) select the Mint ID of relevant NFT, 5) confirm the NFT displayed matches your selection, 6) use a webcam to scan the QR code signature
+              for your item, and finally 7) click "verify" button. Output will show "Signature verified: true" if the item is valid.  <br/>
               <br/>
             <div className="row">
               <div className="column">
@@ -159,14 +178,27 @@ export default function Verify() {
                         <div>
                             Connected wallet: {pubkey?.toString()}
                             <div>
-                            <button onClick={getMints}>getMints</button><br/>
+                            <select id="selectNetworkId" onChange={selectNetwork}>
+                              <option selected disabled>SELECT NETWORK</option>
+                              <option value={"devnet"}>devnet</option>
+                              <option value={"mainnet-beta"}>mainnet-beta</option>
+                              <option value={"testnet"}>testnet</option><br/>
+                            </select>
+                            { selectedNetwork ? (
+                                <div>selected network: {selectedNetwork}</div>
+                              ) : (
+                                <div><br/></div>
+                              )}
+                            <div>
+                              <button onClick={getMints}>getMints</button><br/>
+                            </div>
                               connected mints:<br/>
                               <select id="selectMintId" onChange={selectChange}>
                               <option selected disabled>SELECT MINT ID TO VERIFY</option>
                                 { accountMints.map(item => <option value={item}> {item} </option>)}
                               </select><br/>
-                              <div>selected mint id: {selectedOption}</div>
                             </div>
+                              <div>selected mint id: {selectedOption}</div>
                         </div>
                     ) : (
                         <br/>
@@ -174,7 +206,7 @@ export default function Verify() {
               }
               </div>
               <div className="column">
-              <h3>Enter NFT Data:</h3>
+              <h3>Selected NFT Data:</h3>
 
                 <table className="table">
                   <tr>
@@ -213,18 +245,6 @@ export default function Verify() {
                 </tr>
                 </table>
                 <br/>
-                <div>
-                  <table className="table">
-                    <tr>
-                      <td>Click button to submit:</td>
-                      <td><button onClick={verifyItem}>Verify</button></td>
-                    </tr>
-                    <tr>
-                      <td>Signature Verified:</td>
-                      <td><h3>{sigVerified}</h3></td>
-                    </tr>
-                  </table>
-                </div>
               </div>
               <div className="column">
                 <div>
@@ -245,6 +265,19 @@ export default function Verify() {
                       <div></div>
                     )
                     }
+                    <br/>
+                  <div>
+                  <table className="table">
+                    <tr>
+                      <td>Click button to submit:</td>
+                      <td><button onClick={verifyItem}>Verify</button></td>
+                    </tr>
+                    <tr>
+                      <td>Signature Verified:</td>
+                      <td><h3>{sigVerified}</h3></td>
+                    </tr>
+                  </table>
+                </div>
                   
                 </div>
               </div>
