@@ -87,6 +87,12 @@ a:visited {
   margin-right: auto;
 }
 
+.nft {
+  align-content: center;
+  width: 200px; 
+  height: 200px;
+}
+
 .table {
   margin-left: auto;
   margin-right: auto;

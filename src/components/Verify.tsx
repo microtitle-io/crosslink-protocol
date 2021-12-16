@@ -20,6 +20,11 @@ import {
   Cluster
 } from '@solana/web3.js';
 
+// imports required for getMetadataByMint()
+import axios from 'axios'; 
+import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
+
+
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
 export interface AnchorWallet {
@@ -51,13 +56,16 @@ export default function Verify() {
     const [inputMessage, setMessage] = useState('');
     const [inputSignature, setInputSignature] = useState('');
     const [inputPubkey, setInputPubkey] = useState('');
-    const [accountMints, setAccountMints] = useState(['']); // NEED TO FIX THIS. YOU ARE CLOSE
+    const [accountMints, setAccountMints] = useState(['']);
     const [sigVerified, setSigVerified] = useState('N/A');
-    const [selectedOption, setSelectedOption] = useState<String>();
+    const [selectedMint, setselectedMint] = useState<String>();
     const [selectedNetwork, setSelectedNetwork] = useState('');
     //webcam states
     const [scanResultWebCam, setScanResultWebCam] = useState('');
-
+    //NFT metadata retrieval
+    const [mintMetadata, setMintMetadata] = useState(['']); 
+    const [curName, setName] = useState(''); 
+    const [curImage, setImage] = useState(''); 
 
 
 
@@ -116,8 +124,55 @@ export default function Verify() {
     // example source from here: https://www.kindacode.com/article/react-typescript-handling-select-onchange-event/ 
     const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       const value = event.target.value;
-      setSelectedOption(value);
+      setselectedMint(value);
     };
+
+
+    // modified function taken from NFT-Armory: https://github.com/ilmoi/nft-armory
+    // shout out to ilmoi!
+    async function getMetadataByMint(
+      mint: PublicKey //,
+      //metadataPDA?: PublicKey,
+      //metadataOnchain?: MetadataData
+    ) {
+
+      const connection = new Connection(selectedNetwork, "confirmed");
+
+      const pda = (await Metadata.getPDA(mint));
+      const onchain = (await Metadata.load(connection, pda)).data;
+      const metadataExternal = (await axios.get(onchain.data.uri)).data;
+      return {
+        metadataPDA: pda,
+        metadataOnchain: onchain,
+        metadataExternal,
+      };
+    }
+
+    const handleMetadata= async () => {
+      //const mint = selectedMint || '';
+      const mintId = new PublicKey(selectedMint || '') 
+      const metadata = getMetadataByMint(mintId);
+      
+      const metadataTemp: any[] = [];
+      const pda = (await metadata).metadataPDA;
+      const onChain = (await metadata).metadataOnchain;
+      const external = (await metadata).metadataExternal;
+      
+      //metadataTemp.push(pda);
+      //metadataTemp.push(onChain);
+      //metadataTemp.push(external);
+      //setMintMetadata(metadataTemp);
+      //const fdsa = onChain.
+      const name = onChain.data.name;
+      const uri = onChain.data.uri;
+      const imageLink = external.data;
+      //const message = onChain.data  ; 
+      setName(name);
+      setImage(external.image);
+      //return (
+      //  <div>metadata: {metadata}</div>
+      //)
+    }
 
     async function verifyItem() {
         try {
@@ -147,7 +202,7 @@ export default function Verify() {
         setInputSignature('');
         setSigVerified('N/A');
         setAccountMints([]);
-        setSelectedOption('');
+        setselectedMint('');
         setSelectedNetwork('');
     }
 
@@ -190,7 +245,7 @@ export default function Verify() {
                                 <div><br/></div>
                               )}
                             <div>
-                              <button onClick={getMints}>getMints</button><br/>
+                              <button onClick={getMints}>get connected mint IDs</button><br/>
                             </div>
                               connected mints:<br/>
                               <select id="selectMintId" onChange={selectChange}>
@@ -198,17 +253,29 @@ export default function Verify() {
                                 { accountMints.map(item => <option value={item}> {item} </option>)}
                               </select><br/>
                             </div>
-                              <div>selected mint id: {selectedOption}</div>
+                              <div>selected mint id: {selectedMint}</div>
+                              <div><button onClick={handleMetadata}>get metadata!</button></div>
                         </div>
                     ) : (
                         <br/>
                     )
               }
               </div>
-              <div className="column">
-              <h3>Selected NFT Data:</h3>
 
-                <table className="table">
+              <div className="column">
+                <h3>NFT Metadata:</h3>
+                <div>
+                  { curName ? (
+                    <div>
+                        <div><b>{ curName } </b><br/></div>
+                        <div><img src={curImage} className='nft'/></div>
+                    </div>
+                  ) : (
+                    <div><br/></div>
+                  )
+                  }
+                </div>
+                {/*<table className="table">
                   <tr>
                     <td>Public Key:</td> 
                     <td>  
@@ -245,7 +312,9 @@ export default function Verify() {
                 </tr>
                 </table>
                 <br/>
+                */}
               </div>
+
               <div className="column">
                 <div>
                   <h3>Scan QR Code to get Signature:</h3>
