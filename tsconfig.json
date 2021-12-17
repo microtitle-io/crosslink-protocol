@@ -7,14 +7,14 @@
       "dom.iterable",
       "esnext"
     ],
-    "noImplicitAny": true,
+    "noImplicitAny": false, // false required b/c implicit any returned by account.account.data["parsed"]["info"]["mint"]
     "noImplicitThis": true,
     "strictNullChecks": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": true, // true
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",

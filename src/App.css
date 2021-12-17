@@ -87,9 +87,37 @@ a:visited {
   margin-right: auto;
 }
 
+.nft_bg {
+  /*  */
+  background-color: rgba(100, 100, 100, 0.4);
+  opacity: 50%;
+}
+
+.nft {
+  background-color: #15171b;
+  align-content: center;
+  padding: 5px;
+  margin: 10px;
+  width: 200px; 
+  height: 200px;
+}
+
 .table {
   margin-left: auto;
   margin-right: auto;
+}
+
+.meta {
+  font-size: calc(12px);
+  width: 200px;
+  inline-size: 200px;
+  overflow-wrap: break-word;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  /*background-color: #15171b;
+  padding: 10px;*/
+  
 }
 
 .row {
@@ -97,7 +125,7 @@ a:visited {
 }
 
 .column {
-  flex: 50% ;
+  flex: 33% ;
 }
 
 .center {

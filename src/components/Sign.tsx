@@ -22,7 +22,7 @@ import {
     Message
   } from '@solana/web3.js';
 
-import Wallet from './Wallet';
+//import Wallet from './Wallet';
 
 import QRCode from 'qrcode';
 
