@@ -10,7 +10,7 @@ function NavBar() {
                 &#169; Copyright 2021
             </li>
             <li>
-                microtitle.io
+                crosslink.pro
             </li>
             <li>proudly open source</li>
             <li>

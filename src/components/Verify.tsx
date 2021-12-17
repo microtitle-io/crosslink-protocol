@@ -57,18 +57,19 @@ export default function Verify() {
     const [inputSignature, setInputSignature] = useState('');
     const [inputPubkey, setInputPubkey] = useState('');
     const [accountMints, setAccountMints] = useState(['']);
-    const [sigVerified, setSigVerified] = useState('N/A');
+    const [sigVerified, setSigVerified] = useState(false);
     const [selectedMint, setselectedMint] = useState<String>();
     const [selectedNetwork, setSelectedNetwork] = useState('');
     //webcam states
     const [scanResultWebCam, setScanResultWebCam] = useState('');
     //NFT metadata retrieval
-    const [mintMetadata, setMintMetadata] = useState(['']); 
+    const [mintMetadata, setMintMetadata] = useState(''); 
     const [curName, setName] = useState(''); 
     const [curImage, setImage] = useState(''); 
-
-
-
+    const [curAttribute, setAttributes] = useState(''); 
+    const [traitMessage, setTraitMessage] = useState('');
+    const [traitPubkey, setTraitPubkey] = useState('');
+    const [allTraits, setAllTraits] = useState(['']);
 
     // Select the network to draw on-chain data from:
     const selectNetwork = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -114,10 +115,17 @@ export default function Verify() {
         //const mint_id = account.pubkey.toString(); // THIS IS JUST THE TOKEN ACCOUNT ADDRESS, NOT MINT ID!
         // you had to set compiler option
         const mint_id = account.account.data["parsed"]["info"]["mint"];
-        //const mint_id = `${account.account.data.toString()}`;
-        mints.push(mint_id);
+
+        // implicit filter out of non-unique / fungible or normal SPL token accounts. QTY must = 1 
+        const quantity = `${account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"]}`;
+        if (Number(quantity) == 1) {
+          mints.push(mint_id);
+        } else {
+
+        }
       });
       setAccountMints(mints);
+      //setMintQuantities(quantities);
     }
 
     // Drop-down menu handling for selected Mint ID
@@ -158,39 +166,52 @@ export default function Verify() {
       const onChain = (await metadata).metadataOnchain;
       const external = (await metadata).metadataExternal;
       
-      //metadataTemp.push(pda);
-      //metadataTemp.push(onChain);
-      //metadataTemp.push(external);
-      //setMintMetadata(metadataTemp);
-      //const fdsa = onChain.
       const name = onChain.data.name;
       const uri = onChain.data.uri;
-      const imageLink = external.data;
-      //const message = onChain.data  ; 
+
+
+      //const attributes = JSON.parse(external.attributes);
       setName(name);
       setImage(external.image);
-      //return (
-      //  <div>metadata: {metadata}</div>
-      //)
+      setMintMetadata(uri);
+
+      //const attributesJson = JSON.parse(external.attributes);
+      const attributes = external.attributes; // BUG: need to handle where attributes is undefined
+
+      const everyTrait: any[] = [];
+      const everyValue: any[] = [];
+      attributes.forEach((trait, i) => {
+        const traitJson = JSON.parse(JSON.stringify(trait));
+          if (traitJson.trait_type.toLowerCase() === "message") {
+            setTraitMessage(traitJson.value.toLowerCase());
+          } else if (traitJson.trait_type.toLowerCase() === "pubkey") {
+            setTraitPubkey(traitJson.value.toLowerCase());
+          }
+          else {
+            // need to handle 
+          }
+          everyTrait.push([traitJson.trait_type, traitJson.value]);
+      });
+      setAllTraits(everyTrait);
     }
 
     async function verifyItem() {
         try {
-            if (!inputMessage) {
+            if (!traitMessage) {
                 throw new Error('no signature provided.');
         }
-        const message: string = inputMessage;
+        const message: string = traitMessage;
         //const messageArray = new Uint8Array(bs58.decode(message));
         const messageArray = new Uint8Array(decodeUTF8(message));
         const signatureBase58: string = inputSignature;
         const signatureArray = new Uint8Array(bs58.decode(signatureBase58));
     
-        const pubkeyBase58: string = inputPubkey;  //bs58.decode(selectedWallet.publicKey!.toString());
+        const pubkeyBase58: string = traitPubkey;  //bs58.decode(selectedWallet.publicKey!.toString());
         const pubKeyArray = new Uint8Array(bs58.decode(pubkeyBase58));
     
         // assemble all of the components, perform the detached verify of signed message.
         const verified = await nacl.sign.detached.verify(messageArray, signatureArray, pubKeyArray);
-        setSigVerified(verified.toString());
+        setSigVerified(verified);
       } catch (e) {
         console.warn(e);
       }
@@ -200,10 +221,12 @@ export default function Verify() {
         setInputPubkey('');
         setMessage('');
         setInputSignature('');
-        setSigVerified('N/A');
+        setSigVerified(false);
         setAccountMints([]);
         setselectedMint('');
-        setSelectedNetwork('');
+        //setSelectedNetwork('');
+        setTraitMessage('');
+        setTraitPubkey('');
     }
 
     const handleErrorWebCam = (error: string) => {
@@ -255,9 +278,11 @@ export default function Verify() {
                             </div>
                               <div>selected mint id: {selectedMint}</div>
                               <div><button onClick={handleMetadata}>get metadata!</button></div>
+                              <div><br/></div>
+                              <div><button onClick={resetFields}><b>Reset all Fields</b></button></div>
                         </div>
                     ) : (
-                        <br/>
+                        <div><h3>Please Connect Wallet</h3></div>
                     )
               }
               </div>
@@ -268,51 +293,55 @@ export default function Verify() {
                   { curName ? (
                     <div>
                         <div><b>{ curName } </b><br/></div>
-                        <div><img src={curImage} className='nft'/></div>
+                        <div><a href={curImage} target="_blank"><img src={curImage} className='nft'/></a></div>
+                        <div><a href={mintMetadata} target="_blank">metadata</a></div>
+                        <table className='meta'>
+                          <tr><td>Attributes:</td></tr>
+                            { allTraits.map(item => <tr><td>{item[0]}: </td><td>{item[1]}</td></tr>)}
+                        </table>
                     </div>
                   ) : (
-                    <div><br/></div>
+                    <><div>Use pane to the left to retrieve NFT metadata, or Use Manual Entry Below:</div>
+                    <br/>
+                    <div>
+                        <table className="table">
+                          <tr>
+                            <td>Public Key:</td>
+                            <td>
+                              <input
+                                type="text"
+                                value={traitPubkey}
+                                onChange={(e) => setTraitPubkey(e.target.value.trim())} />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Message: {' '}</td>
+                            <td>
+                              <input
+                                type="text"
+                                value={traitMessage}
+                                onChange={(e) => setTraitMessage(e.target.value.trim())} />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Signature: {' '}</td>
+                            <td>
+                              <input
+                                type="text"
+                                value={inputSignature}
+                                onChange={(e) => setInputSignature(e.target.value.trim())} />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td><button onClick={resetFields}>Reset</button></td>
+                          </tr>
+                        </table>
+                        <br />
+                    </div></>
                   )
                   }
                 </div>
-                {/*<table className="table">
-                  <tr>
-                    <td>Public Key:</td> 
-                    <td>  
-                      <input
-                        type="text"
-                        value={inputPubkey}
-                        onChange={(e) => setInputPubkey(e.target.value.trim())}
-                      />
-                    </td>
-                </tr>
-                <tr>
-                  <td>Message: {' '}</td>
-                  <td>
-                    <input
-                      type="text"
-                      value={inputMessage}
-                      onChange={(e) => setMessage(e.target.value.trim())}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>Signature: {' '}</td>
-                  <td>
-                    <input
-                      type="text"
-                      value={inputSignature}
-                      onChange={(e) => setInputSignature(e.target.value.trim())}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td><button onClick={resetFields}>Reset</button></td>
-                </tr>
-                </table>
-                <br/>
-                */}
               </div>
 
               <div className="column">
@@ -327,9 +356,10 @@ export default function Verify() {
                     />
                   </div>
                     {inputSignature ? (
-                      <div>
-                        signature is scanned!
-                      </div>
+                      <table className='meta'>
+                        <tr>scanned signature: </tr>
+                        <tr>{inputSignature}</tr>
+                      </table>
                     ) : (
                       <div></div>
                     )
@@ -343,7 +373,14 @@ export default function Verify() {
                     </tr>
                     <tr>
                       <td>Signature Verified:</td>
-                      <td><h3>{sigVerified}</h3></td>
+                      <td>
+                          { sigVerified ? (
+                            <h3 style={{color: "white"}}> {sigVerified.toString()} </h3>
+                            ) : (
+                            <h3 style={{color: "red"}}> {sigVerified.toString()} </h3>
+                            )
+                          }
+                      </td>
                     </tr>
                   </table>
                 </div>
