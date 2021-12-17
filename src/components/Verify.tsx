@@ -185,7 +185,7 @@ export default function Verify() {
           if (traitJson.trait_type.toLowerCase() === "message") {
             setTraitMessage(traitJson.value.toLowerCase());
           } else if (traitJson.trait_type.toLowerCase() === "pubkey") {
-            setTraitPubkey(traitJson.value.toLowerCase());
+            setTraitPubkey(traitJson.value);
           }
           else {
             // need to handle 
@@ -196,10 +196,10 @@ export default function Verify() {
     }
 
     async function verifyItem() {
-        try {
-            if (!traitMessage) {
-                throw new Error('no signature provided.');
-        }
+        //try {
+        //    if (!traitMessage) {
+        //        throw new Error('no signature provided.');
+        //}
         const message: string = traitMessage;
         //const messageArray = new Uint8Array(bs58.decode(message));
         const messageArray = new Uint8Array(decodeUTF8(message));
@@ -212,9 +212,9 @@ export default function Verify() {
         // assemble all of the components, perform the detached verify of signed message.
         const verified = await nacl.sign.detached.verify(messageArray, signatureArray, pubKeyArray);
         setSigVerified(verified);
-      } catch (e) {
-        console.warn(e);
-      }
+      //} catch (e) {
+      //  console.warn(e);
+      //}
     }
 
     function resetFields() {
@@ -301,7 +301,7 @@ export default function Verify() {
                         </table>
                     </div>
                   ) : (
-                    <><div>Use pane to the left to retrieve NFT metadata, or Use Manual Entry Below:</div>
+                    <><div>First, use pane to the left to retrieve NFT metadata, OR use manual trait entry below:</div>
                     <br/>
                     <div>
                         <table className="table">
