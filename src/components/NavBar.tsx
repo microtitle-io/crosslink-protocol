@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from "../logo.png";
 //import Wallet from './Wallet';
+import {Button} from '@mui/material';
 
 function NavBar() {
     return (
@@ -11,19 +12,19 @@ function NavBar() {
                 <img src={logo} className="App-logo" alt="logo" />
             </li>
             <li>
-                <Link to="/">Home</Link>
+                <Button variant="outlined"><Link to="/">Home</Link></Button>
             </li>
             <li>
-                <Link to="/sign">Sign</Link>
+                <Button variant="outlined"><Link to="/sign">Sign</Link></Button>
             </li>
             <li>
-                <Link to="mint">Mint</Link>
+                <Button variant="outlined"><Link to="mint">Mint</Link></Button>
             </li>
             <li>
-                <Link to="/verify">Verify</Link>
+                <Button variant="outlined"><Link to="/verify">Verify</Link></Button>
             </li>
             <li>
-                <Link to="/about">About</Link>
+                <Button variant="outlined"><Link to="/about">About</Link></Button>
             </li>
            {/* <li>
                 wallet<Wallet />

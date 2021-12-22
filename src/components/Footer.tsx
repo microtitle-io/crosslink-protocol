@@ -14,7 +14,7 @@ function NavBar() {
             </li>
             <li>proudly open source</li>
             <li>
-                v1.0.1
+                v1.0.2
             </li>
         </ul>
         </div>
