@@ -15,7 +15,7 @@ function Mint() {
     return (
         <div className="body">
             <div className="text">
-                <h1>{`{ Mint }`}</h1>
+                <h1 style={{color: '#FFFFFF'}}>{`{ Mint }`}</h1>
                 <h2>COMING SOON&#8482;</h2>
                 <Container>
                     <div>
@@ -60,9 +60,8 @@ function Mint() {
                         <br/>
                         Here is a <a href="https://solscan.io/token/xCeq3XCUvn4Y2RjbwnHBCHqL8sAhXrda92VG7uCMotR?cluster=devnet#metadata"> link to the first NFT microtitle</a> created using this method, as an example. <br/>
                         <br/>
-                        <em>Note: this page is just a placeholder while we work to create each of the components for seamlessly minting, and verifying microtitles using this web app. 
-                        We are providing the information for a user to mint their own NFT offline, that will be able to be verified against an item and its signature. But please check back soon, 
-                        as we are working to create a more integrated experience.</em>
+                        <em>Note: this is a placeholder while we work to create each of the components for seamlessly minting microtitles directly within the app. 
+                        We are providing the information for a user to mint their own NFT offline, that will be able to be verified against an item and its signature, using our Verify feature.</em>
                     </div>
                 </Container>
             </div>

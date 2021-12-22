@@ -11,7 +11,10 @@
   /* justify-content: center; */
   font-size: calc(10px + 2vmin);
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  /* color: white; */
+  /* background: rgb(0,0,0); */
+  /* background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(69,191,197,1) 100%); */
+  background: rgb(125,0,158);
+  background: linear-gradient(140deg, rgba(125,0,158,1) 0%, rgba(126,130,220,1) 50%, rgba(0,0,0,1) 100%);
 }
 
 .body {

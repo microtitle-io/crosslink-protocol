@@ -239,7 +239,7 @@ export default function Verify() {
   return (
     <div className="body">
         <div className="text">
-          <h1>{`{ Verify }`}</h1>
+          <h1 style={{color: '#FFFFFF'}}>{`{ Verify }`}</h1>
             <h3>Microtitle Verification Sequence:</h3>
             The app compares the QR code signature of your physical item with corresponding signing data contained within the NFT's metadata--the bonding keypair public key and associated message. 
             Steps: 1) Connect your wallet containing the NFT "microtitle" you want to verify. 2) Select the appropriate network, 3) click "get mints" button, 4) select the Mint ID of relevant NFT, 5) confirm the NFT displayed matches your selection, 6) use a webcam to scan the QR code signature
