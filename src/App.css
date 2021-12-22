@@ -1,6 +1,7 @@
 .App {
   text-align: center;
-  background-color: #282c34;
+  background-color: rgb(235, 235, 235);
+   /* background-color: #15171b; */
   /*min-height: 100vh;*/
   min-height: 100%;
   position: relative;
@@ -10,7 +11,7 @@
   /* justify-content: center; */
   font-size: calc(10px + 2vmin);
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color: white;
+  /* color: white; */
 }
 
 .body {
@@ -20,7 +21,7 @@
 
 .wallet {
   justify-content: right;
- /*  background-color: #15171b; */
+  background-color: #15171b;
 }
 .wallet li {
   list-style-type: none;
@@ -29,23 +30,22 @@
 
 }
 
-/* h1 {
-  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-} */
-
 a {
-  color: #5942bf;
+  /* color: #5942bf; */
+  color: rgb(0, 182, 136);
   text-decoration: none;
 }
 
 a:visited {
-  color: #5942bf;
+  /* color: #5942bf; */
+  color: rgb(0, 182, 136);
   text-decoration: none;
 }
 
 .nav {
   position: relative;
   top: 0;
+  /* background-color: white; */
   background-color: #15171b;
   list-style-type: none;
   text-align: center; 
@@ -58,7 +58,7 @@ a:visited {
 .nav li {
   display: inline-block;
   vertical-align: middle;
-  color: white;
+  /* color: white; */
   font-size: calc(10px + 1vmin);
   padding: 15px;
 }
@@ -88,7 +88,6 @@ a:visited {
 }
 
 .nft_bg {
-  /*  */
   background-color: rgba(100, 100, 100, 0.4);
   opacity: 50%;
 }
@@ -105,6 +104,7 @@ a:visited {
 .table {
   margin-left: auto;
   margin-right: auto;
+  overflow-wrap: break-word;
 }
 
 .meta {
@@ -115,9 +115,8 @@ a:visited {
   text-align: left;
   margin-left: auto;
   margin-right: auto;
-  /*background-color: #15171b;
-  padding: 10px;*/
-  
+  /*background-color: #15171b;*/
+  padding: 10px;
 }
 
 .row {
@@ -142,8 +141,7 @@ a:visited {
 
 .text {
   font-size: calc(7.5px + 1vmin);
-  max-width: 60%;
-  color: white;
+  max-width: 80%;
   margin: 10px;
   align-content: center;
   margin-left: auto;
@@ -154,8 +152,13 @@ a:visited {
   list-style-type: none;
 }
 
+.resLink {
+  color: black;
+}
+
 .App-link {
-  color: #6170fb;
+  color: #2e3472;
+  /* color: #6170fb; */
   text-decoration: none;
 }
 
@@ -165,7 +168,9 @@ a:visited {
   height: 100px;
   left: 0;
   width: 100%;
-  color: white;
+  /* color: white; */
+  color: #01B688;
+  /* color: rgb(235, 235, 235); */
   text-align: center;
   background-color: #15171b;
   list-style-type: none;

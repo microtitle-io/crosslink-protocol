@@ -1,4 +1,13 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
+import {Button, TextField, Typography, Container} from '@material-ui/core';
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
@@ -101,41 +110,66 @@ function Sign() {
                 <h1>{`{ Sign }`}</h1>
                 <div className="text">
                     This section is used to generate a signature that is permanently attached to or embedded on your item. 
-                    To do this, you must first create a unique "bonding" keypair. Tips to create the Keypair: 
-                    <ol className="how">
-                        <li>Create and connect a unique and unused keypair</li>
-                        <li>1 keypair = 1 item </li>
-                        <li>Do not reuse addresses! </li>
-                        <li>Connect keypair with the Crosslink web app using a wallet like Sollet, or Phantom</li>
-                    </ol>
+                    To do this, you must first create a unique "bonding" keypair. Next, connect the keypair using your wallet, enter a message and click "sign message." <br/>
                     { pubkey ? (
                         <div>
-                            Bonding keypair public key: {pubkey?.toString()}
+                            {/*Bonding keypair public key: {pubkey?.toString()}*/}
                         </div>
                     ) : (
                         <br/>
                     )
                     }
                     <br/>
-                    Message to sign:{' '}
-                    <input
-                        type="text"
-                        value={customMessage}
-                        onChange={(e) => setCustomMessage(e.target.value.trim())}
-                    />
-                    <button onClick={signMsg}>Sign Message</button> <br/>
+                    <div>
+                            <TableContainer component={Paper}>
+                              <Table sx={{ minWidth: 650 }}  aria-label="message table">
+                                <TableBody>
+                                    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                      <TableCell component="th" scope="row"><TextField id="outlined-basic" label="Message" variant="outlined" value={customMessage} onChange={(e) => setCustomMessage(e.target.value.trim())} /></TableCell>
+                                      <TableCell align="right"><Button onClick={signMsg}>Sign Message</Button></TableCell>
+                                    </TableRow>
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                        </div>
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    
+                     <br/>
+                    <br/>
                     {outputSignature ? (
                         <div>
-                            signedMessage: {signedMessage} <br/>
-                            signature: {outputSignature} <br/>
-                            <br />
-                            Downloadable QR code: <br/>
-                            <a href={imageUrl} download><img src={imageUrl} alt="signature QR code"  /></a>
+                            <TableContainer component={Paper}>
+                              <Table sx={{ minWidth: 650 }}  aria-label="signature table">
+                                {/*<TableHead>
+                                  <TableRow>
+                                    <TableCell>Field</TableCell>
+                                    <TableCell align="right">Value</TableCell>
+                                  </TableRow>
+                                </TableHead>*/}
+                                <TableBody>
+                                    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                      <TableCell component="th" scope="row">Signed message:</TableCell>
+                                      <TableCell align="right">{signedMessage}</TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                      <TableCell>Signature:</TableCell>
+                                      <TableCell align="right">{outputSignature}</TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                        <TableCell>QR code (click to download):</TableCell>
+                                        <TableCell align="right"><a href={imageUrl} download={pubkey}><img src={imageUrl} alt="signature QR code"  /></a></TableCell>
+                                    </TableRow>
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
                         </div>
                     ) : (
-                        <div>
-                            sign a message!
-                        </div>
+                        <div></div>
                     )}
                 </div>
             </div>

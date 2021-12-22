@@ -2,7 +2,7 @@
 // Pierre Arrowana: https://github.com/Arrowana/anchor-scaffold/blob/master/app/src/components/Wallet.tsx
 // Thank you for graciously answering dumb questions, and providing many helpful hints.  
 
-import { WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base';
+//import { WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base';
 import { WalletDialogProvider } from '@solana/wallet-adapter-material-ui';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import {

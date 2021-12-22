@@ -6,6 +6,10 @@ import nacl from 'tweetnacl';
 import QrReader from 'react-qr-reader';
 import { decodeUTF8 } from 'tweetnacl-util';
 
+// UI components
+import {Button, TextField, Typography, Container} from '@material-ui/core';
+
+// wallet stuff
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
   Connection,
@@ -211,6 +215,7 @@ export default function Verify() {
     //setSelectedNetwork('');
     setTraitMessage('');
     setTraitPubkey('');
+    setName('')
   }
 
   const handleErrorWebCam = (error: string) => {
@@ -252,7 +257,7 @@ export default function Verify() {
                               <div><br/></div>
                             )}
                           <div>
-                            <button onClick={getMints}>get connected mint IDs</button><br/>
+                            <Button variant='outlined' onClick={getMints}>get connected mint IDs</Button><br/>
                           </div>
                             connected mints:<br/>
                             <select id="selectMintId" onChange={selectChange}>
@@ -261,9 +266,9 @@ export default function Verify() {
                             </select><br/>
                           </div>
                             <div>selected mint id: {selectedMint}</div>
-                            <div><button onClick={handleMetadata}>get metadata!</button></div>
+                            <div><Button variant='outlined' onClick={handleMetadata}>get metadata!</Button></div>
                             <div><br/></div>
-                            <div><button onClick={resetFields}><b>Reset all Fields</b></button></div>
+                            <div><Button variant='outlined' onClick={resetFields}><b>Reset all Fields</b></Button></div>
                       </div>
                   ) : (
                       <div><h3>Please Connect Wallet</h3></div>
@@ -318,7 +323,7 @@ export default function Verify() {
                         </tr>
                         <tr>
                           <td></td>
-                          <td><button onClick={resetFields}>Reset</button></td>
+                          <td><Button variant='outlined' onClick={resetFields}>Reset</Button></td>
                         </tr>
                       </table>
                       <br />
@@ -352,14 +357,14 @@ export default function Verify() {
                 <div>
                 <table className="table">
                   <tr>
-                    <td>Click button to submit:</td>
-                    <td><button onClick={verifyItem}>Verify</button></td>
+                    <td>Click Button to submit:</td>
+                    <td><Button variant='outlined' onClick={verifyItem}>Verify</Button></td>
                   </tr>
                   <tr>
                     <td>Signature Verified:</td>
                     <td>
                         { sigVerified ? (
-                          <h3 style={{color: "white"}}> {sigVerified.toString()} </h3>
+                          <h3 style={{color: "#01B688"}}> {sigVerified.toString()} </h3>
                           ) : (
                           <h3 style={{color: "red"}}> {sigVerified.toString()} </h3>
                           )

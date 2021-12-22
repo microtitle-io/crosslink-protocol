@@ -9,8 +9,8 @@ const Navigation: FC = () => {
 
   return (
     <Toolbar className="wallet" style={{ display: 'flex' }}>
-        <WalletMultiButton />
-        {wallet && <WalletDisconnectButton startIcon={<LinkOff />} style={{ marginLeft: 8 }} />}
+        <WalletMultiButton style={{backgroundColor: '#15171b', color: '#01B688',  border: '1px solid #2e3472'}}/>
+        {wallet && <WalletDisconnectButton startIcon={<LinkOff />} style={{ marginLeft: 8, backgroundColor: '#15171b', color: '#01B688',  border: '1px solid #2e3472' }} />}
     </Toolbar>
   );
 };
