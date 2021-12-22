@@ -7,7 +7,14 @@ import QrReader from 'react-qr-reader';
 import { decodeUTF8 } from 'tweetnacl-util';
 
 // UI components
-import {Button, TextField, Typography, Container} from '@material-ui/core';
+import {Button, TextField, Select, MenuItem, Typography, Container} from '@material-ui/core';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 // wallet stuff
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
@@ -238,145 +245,173 @@ export default function Verify() {
             Steps: 1) Connect your wallet containing the NFT "microtitle" you want to verify. 2) Select the appropriate network, 3) click "get mints" button, 4) select the Mint ID of relevant NFT, 5) confirm the NFT displayed matches your selection, 6) use a webcam to scan the QR code signature
             for your item, and finally 7) click "verify" button. Output will show "Signature verified: true" if the item is valid.  <br/>
             <br/>
-          <div className="row">
-            <div className="column">
-            <h3>Mint Data:</h3>
+            <h3>Retrieve Mint Data:</h3>
+            <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }}  aria-label="network table">
             { pubkey ? (
-                      <div>
-                          Connected wallet: {pubkey?.toString()}
-                          <div>
-                          <select id="selectNetworkId" onChange={selectNetwork}>
-                            <option selected disabled>SELECT NETWORK</option>
-                            <option value={"devnet"}>devnet</option>
-                            <option value={"mainnet-beta"}>mainnet-beta</option>
-                            <option value={"testnet"}>testnet</option><br/>
-                          </select>
-                          { selectedNetwork ? (
-                              <div>selected network: {selectedNetwork}</div>
-                            ) : (
-                              <div><br/></div>
-                            )}
-                          <div>
-                            <Button variant='outlined' onClick={getMints}>get connected mint IDs</Button><br/>
-                          </div>
-                            connected mints:<br/>
+                    <TableBody>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">Connected wallet:</TableCell>
+                        <TableCell align="right">{pubkey?.toString()}</TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">Select a network:</TableCell>
+                        <TableCell align="right">                          
+                            <select 
+                                id="selectNetworkId"
+                                onChange={selectNetwork}
+                            >
+                              <option selected disabled>SELECT NETWORK</option>
+                              <option value={"devnet"}>devnet</option>
+                              <option value={"mainnet-beta"}>mainnet-beta</option>
+                              <option value={"testnet"}>testnet</option>
+                            </select>
+                        </TableCell>
+                      </TableRow>
+                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">Selected network:</TableCell>
+                      { selectedNetwork ? (
+                        <TableCell align="right">{selectedNetwork}</TableCell>
+                        ) : (
+                          <TableCell align="right">N/A</TableCell>
+                        )}
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">Find wallet mint IDs:</TableCell>
+                        <TableCell align="right"><Button variant='outlined' onClick={getMints}>get connected mint IDs</Button></TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">Connected mints:</TableCell>
+                        <TableCell align="right">
                             <select id="selectMintId" onChange={selectChange}>
-                            <option selected disabled>SELECT MINT ID TO VERIFY</option>
+                              <option selected disabled>SELECT MINT ID TO VERIFY</option>
                               { accountMints.map(item => <option value={item}> {item} </option>)}
-                            </select><br/>
-                          </div>
-                            <div>selected mint id: {selectedMint}</div>
-                            <div><Button variant='outlined' onClick={handleMetadata}>get metadata!</Button></div>
-                            <div><br/></div>
-                            <div><Button variant='outlined' onClick={resetFields}><b>Reset all Fields</b></Button></div>
-                      </div>
+                            </select>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">Selected mint id:</TableCell>
+                        <TableCell align="right">{selectedMint}</TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">Query metadata:</TableCell>
+                        <TableCell align="right"><Button variant='outlined' onClick={handleMetadata}>get metadata!</Button></TableCell>
+                      </TableRow>
+                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell component="th" scope="row">Reset all fields:</TableCell>
+                        <TableCell align="right"><Button variant='outlined' onClick={resetFields}>Reset all Fields</Button></TableCell>
+                      </TableRow>
+                    </TableBody>
                   ) : (
                       <div><h3>Please Connect Wallet</h3></div>
                   )
             }
-            </div>
-  
-            <div className="column">
+            </Table>
+            </TableContainer>
               <h3>NFT Metadata:</h3>
               <div>
                 { curName ? (
                   <div>
-                      <div><b>{ curName } </b><br/></div>
-                      <div><a href={curImage} target="_blank"><img src={curImage} className='nft'/></a></div>
-                      <div><a href={mintMetadata} target="_blank">metadata</a></div>
-                      <table className='meta'>
-                        <tr><td>Attributes:</td></tr>
-                          { allTraits.map(item => <tr><td>{item[0]}: </td><td>{item[1]}</td></tr>)}
-                      </table>
+                    <TableContainer component={Paper}>
+                          <Table sx={{ minWidth: 650 }}  aria-label="metadata table">
+                            <TableBody>
+                                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                  <TableCell component="th" scope="row"><b><a href={mintMetadata} target="_blank">{ curName }</a></b></TableCell>
+                                  <TableCell align="right"><b><a href={curImage} target="_blank"><img src={curImage} className='nft'/></a></b> </TableCell>
+                                </TableRow>
+                                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                  <TableCell component="th" scope="row"><b>Atttributes:</b></TableCell>
+                                  <TableCell align="right"></TableCell>
+                                </TableRow>
+                                { allTraits.map(item => 
+                                  <TableRow>
+                                    <TableCell component="th" scope="row">{item[0]}:</TableCell>
+                                    <TableCell align="right">{item[1]}</TableCell>
+                                  </TableRow>
+                                )}
+                            </TableBody>
+                          </Table>
+                      </TableContainer>
                   </div>
                 ) : (
-                  <><div>First, use pane to the left to retrieve NFT metadata, OR use manual trait entry below:</div>
+                  <><div>Connect a wallet to retrieve NFT metadata using section above, OR use manual trait entry below:</div>
                   <br/>
                   <div>
-                      <table className="table">
-                        <tr>
-                          <td>Public Key:</td>
-                          <td>
-                            <input
-                              type="text"
-                              value={traitPubkey}
-                              onChange={(e) => setTraitPubkey(e.target.value.trim())} />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Message: {' '}</td>
-                          <td>
-                            <input
-                              type="text"
-                              value={traitMessage}
-                              onChange={(e) => setTraitMessage(e.target.value.trim())} />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Signature: {' '}</td>
-                          <td>
-                            <input
-                              type="text"
-                              value={inputSignature}
-                              onChange={(e) => setInputSignature(e.target.value.trim())} />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td><Button variant='outlined' onClick={resetFields}>Reset</Button></td>
-                        </tr>
-                      </table>
-                      <br />
+                      <TableContainer component={Paper}>
+                          <Table sx={{ minWidth: 650 }}  aria-label="how-to table">
+                            <TableBody>
+                                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                  <TableCell component="th" scope="row">Public Key:</TableCell>
+                                  <TableCell align="right"><TextField id="outlined-basic" label="pubkey" variant="outlined" value={traitPubkey} onChange={(e) => setTraitPubkey(e.target.value.trim())} /></TableCell>
+                                </TableRow>
+                                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                  <TableCell component="th" scope="row">Message:</TableCell>
+                                  <TableCell align="right"><TextField id="outlined-basic" label="message" variant="outlined" value={traitMessage} onChange={(e) => setTraitMessage(e.target.value.trim())} /></TableCell>
+                                </TableRow>
+                                <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                  <TableCell component="th" scope="row">Signature:</TableCell>
+                                  <TableCell align="right"><TextField id="outlined-basic" label="signature" variant="outlined" value={inputSignature} onChange={(e) => setInputSignature(e.target.value.trim())} /></TableCell>
+                                </TableRow>
+                                <TableRow>
+                                <TableCell component="th" scope="row">Reset:</TableCell>
+                                <TableCell align="right"><Button variant='outlined' onClick={resetFields}>Reset</Button></TableCell>
+                                </TableRow>
+                            </TableBody>
+                          </Table>
+                      </TableContainer>
                   </div></>
                 )
                 }
               </div>
-            </div>
-
-            <div className="column">
               <div>
                 <h3>Scan QR Code to get Signature:</h3>
-                <div className="qrreader">
-                  <QrReader
-                    delay={300}
-                    style={{width: '100%'}}
-                    onError={handleErrorWebCam}
-                    onScan={handleScanWebCam} 
-                  />
-                </div>
-                  {inputSignature ? (
-                    <table className='meta'>
-                      <tr>scanned signature: </tr>
-                      <tr>{inputSignature}</tr>
-                    </table>
-                  ) : (
-                    <div></div>
-                  )
-                  }
-                  <br/>
                 <div>
-                <table className="table">
-                  <tr>
-                    <td>Click Button to submit:</td>
-                    <td><Button variant='outlined' onClick={verifyItem}>Verify</Button></td>
-                  </tr>
-                  <tr>
-                    <td>Signature Verified:</td>
-                    <td>
-                        { sigVerified ? (
-                          <h3 style={{color: "#01B688"}}> {sigVerified.toString()} </h3>
-                          ) : (
-                          <h3 style={{color: "red"}}> {sigVerified.toString()} </h3>
-                          )
-                        }
-                    </td>
-                  </tr>
-                </table>
+                <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 300 }}  aria-label="how-to table">
+                          <TableBody>
+                              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell component="th" scope="row">QR Scan:</TableCell>
+                                <TableCell align="right">
+                                  <div className="qrreader">
+                                    <QrReader
+                                      delay={300}
+                                      style={{width: '100%'}}
+                                      onError={handleErrorWebCam}
+                                      onScan={handleScanWebCam} 
+                                    />
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                                  {inputSignature ? (
+                                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                        <TableCell component="th" scope="row">Signature: </TableCell>
+                                        <TableCell align="right">{inputSignature}</TableCell>
+                                      </TableRow>
+                                  ) : (
+                                    <div></div>
+                                  )
+                                  }
+                              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell component="th" scope="row">Click Button to submit:</TableCell>
+                                <TableCell align="right"><Button variant='outlined' onClick={verifyItem}>Verify</Button></TableCell>
+                              </TableRow>
+                              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell component="th" scope="row">Signature Verified:</TableCell>
+                                <TableCell align="right">
+                                  { sigVerified ? (
+                                    <h3 style={{color: "#01B688"}}> {sigVerified.toString()} </h3>
+                                  ) : (
+                                    <h3 style={{color: "red"}}> {sigVerified.toString()} </h3>
+                                  )
+                                  }
+                                </TableCell>
+                              </TableRow>
+                          </TableBody>
+                        </Table>
+                    </TableContainer>
               </div>
                   
               </div>
-            </div>
-          </div>
         </div>
       </div>
 
