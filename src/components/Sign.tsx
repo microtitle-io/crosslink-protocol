@@ -76,7 +76,7 @@ function Sign() {
 
     const generateQrCode = async (text: string) => {
         try {
-          const response = await QRCode.toDataURL(text, { errorCorrectionLevel: 'M' });
+          const response = await QRCode.toDataURL(text, { errorCorrectionLevel: 'L' });
           setImageUrl(response);
         } catch (error) {
           console.log(error);
@@ -105,7 +105,7 @@ function Sign() {
     }            
 
     return (  
-        <div className="body">
+        <div className="body" style={{minWidth: '80%'}}>
             <div className="text">
                 <h1 style={{color: '#FFFFFF'}}>{`{ Sign }`}</h1>
                 <div className="text">

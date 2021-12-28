@@ -12,8 +12,8 @@ import Paper from '@mui/material/Paper';
 
 function Home() {
     return (
-        <div className="body">
-            
+        <div className="body" style={{minWidth: '60%'}}>
+            <div className='text' >
                 <h1 style={{color: '#FFFFFF'}}>{`{ Crosslink Protocol }`}</h1>
                 NFT titles for durable goods, secured by the Solana blockchain.
                     <h2>How does it work?</h2>
@@ -44,7 +44,7 @@ function Home() {
                         </Table>
                     </TableContainer>
                     <br/>
-            
+            </div>
         </div>
     )
 }

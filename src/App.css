@@ -1,6 +1,5 @@
 .App {
   text-align: center;
-  background-color: rgb(235, 235, 235);
    /* background-color: #15171b; */
   /*min-height: 100vh;*/
   min-height: 100%;
@@ -13,8 +12,14 @@
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   /* background: rgb(0,0,0); */
   /* background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(69,191,197,1) 100%); */
-  background: rgb(125,0,158);
-  background: linear-gradient(140deg, rgba(125,0,158,1) 0%, rgba(126,130,220,1) 50%, rgba(0,0,0,1) 100%);
+  /* background: rgb(125,0,158); */
+  /* background: linear-gradient(140deg, rgba(125,0,158,1) 0%, rgba(126,130,220,1) 50%, rgba(0,0,0,1) 100%); */
+  /* background: rgb(107,14,130); */
+  /* background: linear-gradient(128deg, rgba(107,14,130,1) 0%, rgba(15,143,100,1) 100%); */
+  /* Preferred: */
+  /* background: rgb(209,24,255);
+  background: linear-gradient(128deg, rgba(209,24,255,1) 0%, rgb(30, 255, 179) 100%); */
+  background: #15171b;
 }
 
 .body {
@@ -23,6 +28,7 @@
   max-width: 70%;
   margin-left: auto;
   margin-right: auto;
+  color: white
 }
 
 .wallet {
@@ -51,8 +57,9 @@ a:visited {
 .nav {
   position: relative;
   top: 0;
-  /* background-color: white; */
   background-color: #15171b;
+  background: rgb(81,11,98);
+  background: linear-gradient(128deg, rgba(81,11,98,1) 0%, rgba(13,106,74,1) 100%);
   list-style-type: none;
   text-align: center; 
   padding: 0;
@@ -64,7 +71,6 @@ a:visited {
 .nav li {
   display: inline-block;
   vertical-align: middle;
-  /* color: white; */
   font-size: calc(10px + 1vmin);
   padding: 15px;
 }
@@ -148,10 +154,12 @@ a:visited {
 .text {
   font-size: calc(7.5px + 1vmin);
   max-width: 80%;
+  min-width: 70%;
   margin: 10px;
   align-content: center;
   margin-left: auto;
   margin-right: auto;
+  color: white;
 }
 
 .resources {
@@ -176,9 +184,10 @@ a:visited {
   width: 100%;
   /* color: white; */
   color: #01B688;
-  /* color: rgb(235, 235, 235); */
   text-align: center;
   background-color: #15171b;
+  background: rgb(81,11,98);
+  background: linear-gradient(128deg, rgba(81,11,98,1) 0%, rgba(13,106,74,1) 100%);
   list-style-type: none;
   vertical-align: middle
 }
