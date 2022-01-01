@@ -382,15 +382,19 @@ export default function Verify() {
                                   </div>
                                 </TableCell>
                               </TableRow>
-                                  {inputSignature ? (
-                                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">Signature: </TableCell>
-                                        <TableCell align="right">{inputSignature}</TableCell>
-                                      </TableRow>
-                                  ) : (
-                                    <div></div>
-                                  )
-                                  }
+                              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                  <TableCell component="th" scope="row">Manual Signature Entry (USB reader, copy-paste):</TableCell>
+                                  <TableCell align="right"><TextField id="outlined-basic" label="signature" variant="outlined" value={inputSignature} onChange={(e) => setInputSignature(e.target.value.trim())} /></TableCell>
+                              </TableRow>
+                              {inputSignature ? (
+                                  <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell component="th" scope="row">Signature to verify: </TableCell>
+                                    <TableCell align="right">{inputSignature}</TableCell>
+                                  </TableRow>
+                              ) : (
+                                <div></div>
+                              )
+                              }
                               <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row">Click Button to submit:</TableCell>
                                 <TableCell align="right"><Button variant='outlined' onClick={verifyItem}>Verify</Button></TableCell>
