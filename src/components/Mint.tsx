@@ -1,4 +1,3 @@
-import React from 'react';
 import {Container} from '@material-ui/core';
 
 // good example on how to mint NFT w/ Arweave: https://medium.com/cypher-game/how-to-create-a-solana-nft-with-python-68f6f775f742

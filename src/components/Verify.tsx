@@ -1,10 +1,12 @@
 // Attribution: qrscanner code adapted from this very helpful youtube video by Heart of Programming: https://www.youtube.com/watch?v=7Ntot5ClGIY
 
-import React, { useMemo, useState } from 'react';
-import bs58, { encode } from 'bs58';
+import React, { useState } from 'react';
+
+// utils
+import bs58 from 'bs58';
 import nacl from 'tweetnacl';
-import QrReader from 'react-qr-reader';
 import { decodeUTF8 } from 'tweetnacl-util';
+import QrReader from 'react-qr-reader';
 
 // UI components
 import {Button, TextField, Select, MenuItem, Typography, Container} from '@material-ui/core';
@@ -17,11 +19,10 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 // wallet stuff
-import { useWallet, useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import {
   Connection,
   PublicKey,
-  Transaction,
   clusterApiUrl,
 } from '@solana/web3.js';
 
@@ -29,27 +30,9 @@ import {
 import axios from 'axios'; 
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 
-
+// on-chain program details 
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 export const MICROTITLE_PROGRAM_ID = new PublicKey('KdWVDYMteVwTbBNZGfCkS2ayCFEWhbkBoFZxPwdqCgu');
-
-// export interface AnchorWallet {
-  // publicKey: PublicKey;
-  // signTransaction(transaction: Transaction): Promise<Transaction>;
-  // signAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
-  // signMessage(message: Uint8Array, display: unknown): Promise<Uint8Array>;
-// }
-
-// export function useAnchorWallet(): AnchorWallet | undefined {
-  // const { publicKey, signTransaction, signAllTransactions, signMessage } = useWallet();
-  // return useMemo(
-      // () =>
-          // publicKey && signTransaction && signAllTransactions && signMessage
-              // ? { publicKey, signTransaction, signAllTransactions, signMessage }
-              // : undefined,
-      // [publicKey, signTransaction, signAllTransactions, signMessage]
-  // );
-// }
 
 export default function Verify() {
 
@@ -59,21 +42,16 @@ export default function Verify() {
   const connectedWalletAddress = wallet?.publicKey.toString() || '';
 
   // signature verification input fields
-  const [inputMessage, setMessage] = useState('');
   const [inputSignature, setInputSignature] = useState('');
-  const [inputPubkey, setInputPubkey] = useState('');
   const [accountMints, setAccountMints] = useState(['']);
   const [sigVerified, setSigVerified] = useState(false);
   const [regVerified, setRegVerified] = useState(false);
   const [selectedMint, setselectedMint] = useState<String>();
   const [selectedNetwork, setSelectedNetwork] = useState('');
-  //webcam states
-  const [scanResultWebCam, setScanResultWebCam] = useState('');
   //NFT metadata retrieval
   const [mintMetadata, setMintMetadata] = useState(''); 
   const [curName, setName] = useState(''); 
   const [curImage, setImage] = useState(''); 
-  const [curAttribute, setAttributes] = useState(''); 
   const [traitMessage, setTraitMessage] = useState('');
   const [traitPubkey, setTraitPubkey] = useState('');
   const [allTraits, setAllTraits] = useState(['']);
@@ -125,8 +103,8 @@ export default function Verify() {
       const quantity = `${account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"]}`;
       if (Number(quantity) == 1) {
         mints.push(mint_id);
-      } else {
-    
+      } 
+      else {
       }
     });
     setAccountMints(mints);
@@ -139,7 +117,7 @@ export default function Verify() {
     setselectedMint(value);
   };
 
-
+  // fetching NFT metadata
   // modified function taken from NFT-Armory: https://github.com/ilmoi/nft-armory
   // shout out to @_ilmoi!
   async function getMetadataByMint(
@@ -159,7 +137,7 @@ export default function Verify() {
     };
   }
 
-  const handleMetadata= async () => {    
+  const handleMetadata = async () => {    
     const mintId = new PublicKey(selectedMint || '') 
     const metadata = getMetadataByMint(mintId);
       
@@ -193,12 +171,13 @@ export default function Verify() {
   }
 
   async function verifyItem() {
-      try {
-          if (!traitMessage) {
-              throw new Error('no signature provided.');
+    try {
+      if (!traitMessage) {
+          throw new Error('no signature provided.');
       }
+
+      // first part is signature verification:
       const message: string = traitMessage;
-      //const messageArray = new Uint8Array(bs58.decode(message));
       const messageArray = new Uint8Array(decodeUTF8(message));
       const signatureBase58: string = inputSignature;
       const signatureArray = new Uint8Array(bs58.decode(signatureBase58));
@@ -210,6 +189,7 @@ export default function Verify() {
       const verified = await nacl.sign.detached.verify(messageArray, signatureArray, pubKeyArray);
       setSigVerified(verified);
 
+      // now we are comparing NFT metadata/traits against the on-chain registration   
       const connection = new Connection(selectedNetwork, 'confirmed');
       const accounts = await connection.getParsedProgramAccounts(
         MICROTITLE_PROGRAM_ID,
@@ -228,6 +208,7 @@ export default function Verify() {
         }
       );
 
+      // filter out failing registrations (none, or more than one)
       if ( accounts.length <= 0 || accounts.length > 1 ) { 
        setRegVerified(false);
       }
@@ -253,8 +234,6 @@ export default function Verify() {
   }
 
   function resetFields() {
-    setInputPubkey('');
-    setMessage('');
     setInputSignature('');
     setSigVerified(false);
     setRegVerified(false);
@@ -272,7 +251,6 @@ export default function Verify() {
 
   const handleScanWebCam = (result: string) => {
     if(result) {
-      setScanResultWebCam(result);
       setInputSignature(result);
     }
   }

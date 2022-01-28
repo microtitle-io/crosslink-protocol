@@ -1,7 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from "../logo.png";
-//import Wallet from './Wallet';
 import {Button} from '@mui/material';
 
 function NavBar() {
@@ -30,9 +28,6 @@ function NavBar() {
             <li>
                 <Button variant="outlined"><Link to="/about">About</Link></Button>
             </li>
-           {/* <li>
-                wallet<Wallet />
-            </li>*/}
         </ul>
         </div>
     );

@@ -1,4 +1,3 @@
-import React from 'react';
 import qrcode from '../qrcode.png';
 
 import Table from '@mui/material/Table';
