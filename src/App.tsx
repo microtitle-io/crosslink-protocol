@@ -6,6 +6,7 @@ import NavBar from './components/NavBar';
 import Home from './components/Home';
 import Sign from './components/Sign';
 import Mint from './components/Mint';
+import Register from './components/Register';
 import Verify from './components/Verify';
 import About from './components/About';
 import Footer from './components/Footer';
@@ -24,6 +25,7 @@ const App: FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/sign" element={<Sign />} />
         <Route path="/mint" element={<Mint />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/verify" element={<Verify />} />
         <Route path="/about" element={<About />} />
       </Routes>

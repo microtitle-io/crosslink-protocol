@@ -1,7 +1,7 @@
 // Attribution: qrscanner code adapted from this very helpful youtube video by Heart of Programming: https://www.youtube.com/watch?v=7Ntot5ClGIY
 
 import React, { useMemo, useState } from 'react';
-import bs58 from 'bs58';
+import bs58, { encode } from 'bs58';
 import nacl from 'tweetnacl';
 import QrReader from 'react-qr-reader';
 import { decodeUTF8 } from 'tweetnacl-util';
@@ -17,7 +17,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 // wallet stuff
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWallet, useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
   Connection,
   PublicKey,
@@ -31,24 +31,25 @@ import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 
 
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+export const MICROTITLE_PROGRAM_ID = new PublicKey('KdWVDYMteVwTbBNZGfCkS2ayCFEWhbkBoFZxPwdqCgu');
 
-export interface AnchorWallet {
-  publicKey: PublicKey;
-  signTransaction(transaction: Transaction): Promise<Transaction>;
-  signAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
-  signMessage(message: Uint8Array, display: unknown): Promise<Uint8Array>;
-}
+// export interface AnchorWallet {
+  // publicKey: PublicKey;
+  // signTransaction(transaction: Transaction): Promise<Transaction>;
+  // signAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
+  // signMessage(message: Uint8Array, display: unknown): Promise<Uint8Array>;
+// }
 
-export function useAnchorWallet(): AnchorWallet | undefined {
-  const { publicKey, signTransaction, signAllTransactions, signMessage } = useWallet();
-  return useMemo(
-      () =>
-          publicKey && signTransaction && signAllTransactions && signMessage
-              ? { publicKey, signTransaction, signAllTransactions, signMessage }
-              : undefined,
-      [publicKey, signTransaction, signAllTransactions, signMessage]
-  );
-}
+// export function useAnchorWallet(): AnchorWallet | undefined {
+  // const { publicKey, signTransaction, signAllTransactions, signMessage } = useWallet();
+  // return useMemo(
+      // () =>
+          // publicKey && signTransaction && signAllTransactions && signMessage
+              // ? { publicKey, signTransaction, signAllTransactions, signMessage }
+              // : undefined,
+      // [publicKey, signTransaction, signAllTransactions, signMessage]
+  // );
+// }
 
 export default function Verify() {
 
@@ -63,6 +64,7 @@ export default function Verify() {
   const [inputPubkey, setInputPubkey] = useState('');
   const [accountMints, setAccountMints] = useState(['']);
   const [sigVerified, setSigVerified] = useState(false);
+  const [regVerified, setRegVerified] = useState(false);
   const [selectedMint, setselectedMint] = useState<String>();
   const [selectedNetwork, setSelectedNetwork] = useState('');
   //webcam states
@@ -207,6 +209,44 @@ export default function Verify() {
       // assemble all of the components, perform the detached verify of signed message.
       const verified = await nacl.sign.detached.verify(messageArray, signatureArray, pubKeyArray);
       setSigVerified(verified);
+
+      const connection = new Connection(selectedNetwork, 'confirmed');
+      const accounts = await connection.getParsedProgramAccounts(
+        MICROTITLE_PROGRAM_ID,
+        {
+          filters: [
+            {
+              dataSize: 112, // number of bytes for a microtitle registration
+            },
+            {
+              memcmp: {
+                offset: 48, // number of bytes offset to bkey starting point (type: PublicKey, 32B length)
+                bytes: pubkeyBase58, // base58 encoded string
+              },
+            },
+          ],
+        }
+      );
+
+      if ( accounts.length <= 0 || accounts.length > 1 ) { 
+       setRegVerified(false);
+      }
+      else if ( accounts.length === 1 ) {
+        accounts.forEach((account, i) => {
+          const data: any = account.account.data;
+          const mint = bs58.encode(data.slice(80,112));
+          if (mint === selectedMint) {
+            setRegVerified(true);
+          }
+          else {
+            setRegVerified(false);
+          }
+        });
+      }
+      else {
+        setRegVerified(false)
+      }
+
     } catch (e) {
       console.warn(e);
     }
@@ -217,6 +257,7 @@ export default function Verify() {
     setMessage('');
     setInputSignature('');
     setSigVerified(false);
+    setRegVerified(false);
     setAccountMints([]);
     setselectedMint('');
     //setSelectedNetwork('');
@@ -406,6 +447,17 @@ export default function Verify() {
                                     <h3 style={{color: "#01B688"}}> {sigVerified.toString()} </h3>
                                   ) : (
                                     <h3 style={{color: "red"}}> {sigVerified.toString()} </h3>
+                                  )
+                                  }
+                                </TableCell>
+                              </TableRow>
+                              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                <TableCell component="th" scope="row">Registration Verified:</TableCell>
+                                <TableCell align="right">
+                                  { regVerified ? (
+                                    <h3 style={{color: "#01B688"}}> {regVerified.toString()} </h3>
+                                  ) : (
+                                    <h3 style={{color: "red"}}> {regVerified.toString()} </h3>
                                   )
                                   }
                                 </TableCell>

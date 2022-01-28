@@ -20,6 +20,7 @@ import {
 
 //import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+// import { useWallet, useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
     Connection,
     Keypair,
@@ -52,14 +53,6 @@ export function useAnchorWallet(): AnchorWallet | undefined {
         [publicKey, signTransaction, signAllTransactions, signMessage]
     );
 }
-
-function toHex(buffer: Buffer) {
-    return Array.prototype.map
-      .call(buffer, (x: number) => ('00' + x.toString(16)).slice(-2))
-      .join('');
-  }
-
-
 
 function Sign() {
 
@@ -96,6 +89,7 @@ function Sign() {
             displaySignedMessage(encodeUTF8(messageUint8));
 
             //const signed = await (wallet?.signMessage(messageHashUint8, 'hex'));
+            // const signed = decodeUTF8('signature'); // temporary, blocking out my export of useAnchorWallet to see if it's messing me up
             const signed = await (wallet?.signMessage(messageUint8, 'hex'));
             displaySignature(bs58.encode(signed));
             generateQrCode(bs58.encode(signed));

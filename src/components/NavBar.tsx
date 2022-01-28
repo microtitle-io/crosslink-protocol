@@ -21,8 +21,12 @@ function NavBar() {
                 <Button variant="outlined"><Link to="mint">Mint</Link></Button>
             </li>
             <li>
+                <Button variant="outlined"><Link to="/register">Register</Link></Button>
+            </li>
+            <li>
                 <Button variant="outlined"><Link to="/verify">Verify</Link></Button>
             </li>
+
             <li>
                 <Button variant="outlined"><Link to="/about">About</Link></Button>
             </li>
