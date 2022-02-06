@@ -78,11 +78,17 @@ a:visited {
 
 .App-logo {
   display: block;
+  width: 84px;
+  height: 84px;
   padding: 10px,10px,10px,10px;
-  scale: 100%;
+  scale: 50%;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+}
+
+.logo {
+  scale: 10%;
 }
 
 .qrcode {

@@ -88,6 +88,7 @@ function Register() {
          const utitle = anchor.web3.Keypair.generate();
          const bkey = new PublicKey(bondingKey);
          const mint = new PublicKey(mintId);
+         const REGISTRAR_PUBKEY = new PublicKey('HSMaqKWmpKtibZrukaE4X3HatNDUYkzg39y2kri3PRTh');
 
          // script checks for duplicate bonding key on-chain. 
          const connection = new Connection(selectedNetwork, 'confirmed');
@@ -114,6 +115,7 @@ function Register() {
              accounts: {
                  microtitle: utitle.publicKey,
                  author: wallet.publicKey,
+                 registrar: REGISTRAR_PUBKEY,
                  systemProgram: anchor.web3.SystemProgram.programId,
              },
              signers: [utitle],
