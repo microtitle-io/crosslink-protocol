@@ -7,6 +7,7 @@ import bs58 from 'bs58';
 import nacl from 'tweetnacl';
 import { decodeUTF8 } from 'tweetnacl-util';
 import QrReader from 'react-qr-reader';
+import { Int64LE } from 'int64-buffer';
 
 // UI components
 import {Button, TextField, Select, MenuItem, Typography, Container} from '@material-ui/core';
@@ -48,6 +49,8 @@ export default function Verify() {
   const [regVerified, setRegVerified] = useState(false);
   const [selectedMint, setselectedMint] = useState<String>();
   const [selectedNetwork, setSelectedNetwork] = useState('');
+  // registration verification fields
+  const [regCheckOutput, setRegCheckOutput] = useState('');
   //NFT metadata retrieval
   const [mintMetadata, setMintMetadata] = useState(''); 
   const [curName, setName] = useState(''); 
@@ -176,7 +179,7 @@ export default function Verify() {
           throw new Error('no signature provided.');
       }
 
-      // first part is signature verification:
+      // 1. first part is signature verification:
       const message: string = traitMessage;
       const messageArray = new Uint8Array(decodeUTF8(message));
       const signatureBase58: string = inputSignature;
@@ -189,7 +192,7 @@ export default function Verify() {
       const verified = await nacl.sign.detached.verify(messageArray, signatureArray, pubKeyArray);
       setSigVerified(verified);
 
-      // now we are comparing NFT metadata/traits against the on-chain registration   
+      // 2. Next, we check and compare NFT metadata/traits against the on-chain registration   
       const connection = new Connection(selectedNetwork, 'confirmed');
       const accounts = await connection.getParsedProgramAccounts(
         MICROTITLE_PROGRAM_ID,
@@ -208,9 +211,10 @@ export default function Verify() {
         }
       );
 
-      // filter out failing registrations (none, or more than one)
-      if ( accounts.length <= 0 || accounts.length > 1 ) { 
+      // filter out various cases of registration, verify, and provide explanatory output.
+      if ( accounts.length <= 0 ) { 
        setRegVerified(false);
+       setRegCheckOutput('ERROR: no registration found!');
       }
       else if ( accounts.length === 1 ) {
         accounts.forEach((account, i) => {
@@ -218,14 +222,47 @@ export default function Verify() {
           const mint = bs58.encode(data.slice(80,112));
           if (mint === selectedMint) {
             setRegVerified(true);
+            setRegCheckOutput('OK: clean registration');
           }
           else {
             setRegVerified(false);
+            setRegCheckOutput('ERROR: mint ID does not match registration.');
+          }
+        });
+      }
+      // Challenging case: more than one registration. Only the earliest registration considered valid.
+      else if ( accounts.length > 1 ) { 
+        // finds the earliest timestamp
+        let earliestTimestamp = new Number(Number.MAX_SAFE_INTEGER); 
+        accounts.forEach((account, i) => {
+          const data: any = account.account.data;
+          const timestamp = (new Int64LE(data.slice(40,48))).toNumber();
+          if ( earliestTimestamp > timestamp) {
+            earliestTimestamp = timestamp;
+          }
+        });
+
+        //retrieves and checks mint ID of the earliest timestamped registration ONLY.
+        accounts.forEach((account, i) => {
+          const data: any = account.account.data;
+          const timestamp = (new Int64LE(data.slice(40,48))).toNumber();
+          if ( earliestTimestamp === timestamp) {
+            const mint = bs58.encode(data.slice(80,112));
+            if (mint === selectedMint) {
+              setRegVerified(true);
+              setRegCheckOutput('OK: registration verified. WARNING: bonding key reuse found, attempted forgery likely.');
+            }
+            else {
+              setRegVerified(false);
+              let msg = 'ERROR: Registration check failed. WARNING: bonding key reuse found, this item is a likely forgery.';
+              setRegCheckOutput(msg.concat(" Valid Mint ID = ", mint));
+            }
           }
         });
       }
       else {
         setRegVerified(false)
+        setRegCheckOutput('ERROR: Registration check failed.');
       }
 
     } catch (e) {
@@ -242,7 +279,8 @@ export default function Verify() {
     //setSelectedNetwork('');
     setTraitMessage('');
     setTraitPubkey('');
-    setName('')
+    setName('');
+    setRegCheckOutput('');
   }
 
   const handleErrorWebCam = (error: string) => {
@@ -436,6 +474,17 @@ export default function Verify() {
                                     <h3 style={{color: "#01B688"}}> {regVerified.toString()} </h3>
                                   ) : (
                                     <h3 style={{color: "red"}}> {regVerified.toString()} </h3>
+                                  )
+                                  }
+                                </TableCell>
+                              </TableRow>
+                              <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                              <TableCell component="th" scope="row">Registration Comments:</TableCell>
+                                <TableCell align="right">
+                                  { regVerified ? (
+                                    <h3 style={{color: "#01B688"}}> {regCheckOutput} </h3>
+                                  ) : (
+                                    <h3 style={{color: "red"}}> {regCheckOutput} </h3>
                                   )
                                   }
                                 </TableCell>
