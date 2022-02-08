@@ -7,6 +7,7 @@ import bs58 from 'bs58';
 import nacl from 'tweetnacl';
 import { decodeUTF8 } from 'tweetnacl-util';
 import QrReader from 'react-qr-reader';
+import { Int64LE } from 'int64-buffer';
 
 // UI components
 import {Button, TextField, Select, MenuItem, Typography, Container} from '@material-ui/core';
@@ -209,7 +210,7 @@ export default function Verify() {
       );
 
       // filter out failing registrations (none, or more than one)
-      if ( accounts.length <= 0 || accounts.length > 1 ) { 
+      if ( accounts.length <= 0 ) { 
        setRegVerified(false);
       }
       else if ( accounts.length === 1 ) {
@@ -221,6 +222,33 @@ export default function Verify() {
           }
           else {
             setRegVerified(false);
+          }
+        });
+      }
+      else if ( accounts.length > 1 ) {
+        let earliestTimestamp = new Number(Number.MAX_SAFE_INTEGER); // 
+
+        // setRegVerified(true);
+        // // finds the earliest timestamp
+        accounts.forEach((account, i) => {
+          const data: any = account.account.data;
+          const timestamp = (new Int64LE(bs58.encode(data.slice(40,48)))).toNumber();
+          if ( earliestTimestamp > timestamp) {
+            earliestTimestamp = timestamp;
+          }
+        });
+
+        accounts.forEach((account, i) => {
+          const data: any = account.account.data;
+          const timestamp = (new Int64LE(bs58.encode(data.slice(40,48)))).toNumber();
+          if ( earliestTimestamp === timestamp) {
+            const mint = bs58.encode(data.slice(80,112));
+            if (mint === selectedMint) {
+              setRegVerified(true);
+            }
+            else {
+              setRegVerified(false);
+            }
           }
         });
       }
