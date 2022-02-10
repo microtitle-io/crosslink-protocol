@@ -38,8 +38,9 @@ function Register() {
   const [selectedNetwork, setSelectedNetwork] = useState('https://api.devnet.solana.com');
   const [selectedNetworkShortName, setSelectedNetworkShortName] = useState('devnet');
   const [txid, setTxid] = useState('');
-  const [bondingKeySearch, setBondingKeySearch] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [searchAccounts, setSearchAccounts] = useState(['']);
+  const [searchIndex, setSearchIndex] = useState<number>(48);
 
   // configure the anchor program
   const connection = new anchor.web3.Connection(selectedNetwork, anchor.Provider.defaultOptions().preflightCommitment)
@@ -73,7 +74,7 @@ function Register() {
   function resetFields() {
     setTxid('');
     setBondingKey('');
-    setBondingKeySearch('');
+    setSearchValue('');
     setMintId('');
     setSearchAccounts([]);
   }
@@ -140,9 +141,23 @@ function Register() {
     return output;
   }
 
+  // Select the registration search type:
+  const setSearchType = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    if (value === "bkey") {
+      setSearchIndex(48);
+    }
+    else if (value === "mint") {
+      setSearchIndex(80);
+    }
+    else if (value === "author") {
+      setSearchIndex(8);
+    }
+  };
+
   async function search() {
     // script checks for duplicate bonding key on-chain. 
-    const bkeySearch = new PublicKey(bondingKeySearch);
+    const bkeySearch = new PublicKey(searchValue);
     const connection = new Connection(selectedNetwork, 'confirmed');
     const accounts = await connection.getParsedProgramAccounts(
       MICROTITLE_PROGRAM_ID,
@@ -153,7 +168,7 @@ function Register() {
           },
           {
             memcmp: {
-              offset: 48, // number of bytes offset to bkey starting point (type: PublicKey, 32B length)
+              offset: searchIndex, // number of bytes offset to bkey starting point (type: PublicKey, 32B length)
               bytes: bkeySearch.toBase58(), // base58 encoded string
             },
           },
@@ -281,8 +296,18 @@ function Register() {
                           <TableBody>
                               <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row">Search for a registration:</TableCell>
-                                <TableCell component="th" scope="row"><TextField id="outlined-basic" label="bonding pubkey" variant="outlined" value={bondingKeySearch} onChange={(e) => setBondingKeySearch(e.target.value.trim())} /></TableCell>
-                                <TableCell component="th" scope="row"></TableCell>
+                                <TableCell align="left">                          
+                                        <select 
+                                            id="selectSearchType"
+                                            onChange={setSearchType}
+                                        >
+                                          <option selected disabled>SEARCH REGISTRATION BY:</option>
+                                          <option value={"bkey"}>bonding key</option>
+                                          <option value={"mint"}>mint ID</option>
+                                          <option value={"author"}>author</option>
+                                        </select>
+                                    </TableCell>
+                                <TableCell component="th" scope="row"><TextField id="outlined-basic" label="value" variant="outlined" value={searchValue} onChange={(e) => setSearchValue(e.target.value.trim())} /></TableCell>
                                 <TableCell component="th" scope="row"></TableCell>
                                 <TableCell align="right"><Button onClick={search}>Search</Button></TableCell>
                               </TableRow>
