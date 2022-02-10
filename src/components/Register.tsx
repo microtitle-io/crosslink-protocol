@@ -53,10 +53,6 @@ function Register() {
   const selectNetwork = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setSelectedNetworkShortName(value);
-    if (value === "localhost") {
-      const url = "http://127.0.0.1:8899";
-        setSelectedNetwork(url);
-      }
     if (value === "devnet") {
     const url = clusterApiUrl("devnet");
       setSelectedNetwork(url);
@@ -67,6 +63,14 @@ function Register() {
     }
     else if (value === "testnet") {
       const url = clusterApiUrl("testnet");
+      setSelectedNetwork(url);
+    }
+    else if (value === "gengo-devnet") {
+      const url = "https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899/";
+      setSelectedNetwork(url);
+    }
+    else if (value === "gengo-mainnet") {
+      const url = "https://ssc-dao.genesysgo.net/";
       setSelectedNetwork(url);
     }
   };
@@ -245,7 +249,8 @@ function Register() {
                                             onChange={selectNetwork}
                                         >
                                           <option selected disabled>SELECT NETWORK</option>
-                                          <option value={"localhost"}>localhost</option>
+                                          <option value={"gengo-mainnet"}>GenesysGo Mainnet</option>
+                                          <option value={"gengo-devnet"}>GenesysGo Devnet</option>
                                           <option value={"devnet"}>devnet</option>
                                           <option value={"mainnet-beta"}>mainnet-beta</option>
                                           <option value={"testnet"}>testnet</option>

@@ -74,6 +74,14 @@ export default function Verify() {
       const url = clusterApiUrl("testnet");
       setSelectedNetwork(url);
     }
+    else if (value === "gengo-devnet") {
+      const url = "https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899/";
+      setSelectedNetwork(url);
+    }
+    else if (value === "gengo-mainnet") {
+      const url = "https://ssc-dao.genesysgo.net/";
+      setSelectedNetwork(url);
+    }
   };
 
   const getMints = async () => {
@@ -319,6 +327,8 @@ export default function Verify() {
                                 onChange={selectNetwork}
                             >
                               <option selected disabled>SELECT NETWORK</option>
+                              <option value={"gengo-mainnet"}>GenesysGo Mainnet</option>
+                              <option value={"gengo-devnet"}>GenesysGo Devnet</option>
                               <option value={"devnet"}>devnet</option>
                               <option value={"mainnet-beta"}>mainnet-beta</option>
                               <option value={"testnet"}>testnet</option>
