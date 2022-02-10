@@ -162,7 +162,7 @@ export default function Verify() {
       const traitJson = JSON.parse(JSON.stringify(trait));
         if (traitJson.trait_type.toLowerCase() === "message") {
           setTraitMessage(traitJson.value);
-        } else if (traitJson.trait_type === "pubkey") {
+        } else if (traitJson.trait_type === "pubkey" || traitJson.trait_type === "bkey") {
           setTraitPubkey(traitJson.value);
         }
         else {
