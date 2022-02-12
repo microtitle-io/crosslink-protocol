@@ -52,24 +52,28 @@ function Register() {
   // Select the network to draw on-chain data from:
   const selectNetwork = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    setSelectedNetworkShortName(value);
     if (value === "devnet") {
-    const url = clusterApiUrl("devnet");
+      setSelectedNetworkShortName(value);
+      const url = clusterApiUrl("devnet");
       setSelectedNetwork(url);
     }
     else if (value === "mainnet-beta") {
+      setSelectedNetworkShortName(value);
       const url = clusterApiUrl("mainnet-beta");
       setSelectedNetwork(url);
     }
     else if (value === "testnet") {
+      setSelectedNetworkShortName(value);
       const url = clusterApiUrl("testnet");
       setSelectedNetwork(url);
     }
     else if (value === "gengo-devnet") {
+      setSelectedNetworkShortName("devnet");
       const url = "https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899/";
       setSelectedNetwork(url);
     }
     else if (value === "gengo-mainnet") {
+      setSelectedNetworkShortName("mainnet-beta");
       const url = "https://ssc-dao.genesysgo.net/";
       setSelectedNetwork(url);
     }
