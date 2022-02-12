@@ -10,7 +10,7 @@ import QrReader from 'react-qr-reader';
 import { Int64LE } from 'int64-buffer';
 
 // UI components
-import {Button, TextField, Select, MenuItem, Typography, Container} from '@material-ui/core';
+import {Button, TextField, Typography, Container} from '@material-ui/core';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -18,6 +18,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { SelectChangeEvent } from "@mui/material";
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 
 // wallet stuff
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
@@ -47,7 +52,7 @@ export default function Verify() {
   const [accountMints, setAccountMints] = useState(['']);
   const [sigVerified, setSigVerified] = useState(false);
   const [regVerified, setRegVerified] = useState(false);
-  const [selectedMint, setselectedMint] = useState<String>();
+  const [selectedMint, setselectedMint] = useState('');
   const [selectedNetwork, setSelectedNetwork] = useState('');
   // registration verification fields
   const [regCheckOutput, setRegCheckOutput] = useState('');
@@ -55,30 +60,36 @@ export default function Verify() {
   const [mintMetadata, setMintMetadata] = useState(''); 
   const [curName, setName] = useState(''); 
   const [curImage, setImage] = useState(''); 
+  const [NFTUrl, setNFTUrl] = useState(''); 
   const [traitMessage, setTraitMessage] = useState('');
   const [traitPubkey, setTraitPubkey] = useState('');
   const [allTraits, setAllTraits] = useState(['']);
+  const [selectedNetworkShortName, setSelectedNetworkShortName] = useState('devnet');
 
   // Select the network to draw on-chain data from:
-  const selectNetwork = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectNetwork = (event: SelectChangeEvent<unknown>) => {
     const value = event.target.value;
     if (value === "devnet") {
+      setSelectedNetworkShortName(value);
       const url = clusterApiUrl("devnet");
       setSelectedNetwork(url);
     }
     else if (value === "mainnet-beta") {
+      setSelectedNetworkShortName(value);
       const url = clusterApiUrl("mainnet-beta");
       setSelectedNetwork(url);
     }
-    else if (value === "testnet") {
-      const url = clusterApiUrl("testnet");
-      setSelectedNetwork(url);
-    }
+    // else if (value === "testnet") {
+      // const url = clusterApiUrl("testnet");
+      // setSelectedNetwork(url);
+    // }
     else if (value === "gengo-devnet") {
+      setSelectedNetworkShortName("devnet");
       const url = "https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899/";
       setSelectedNetwork(url);
     }
     else if (value === "gengo-mainnet") {
+      setSelectedNetworkShortName("mainnet-beta");
       const url = "https://ssc-dao.genesysgo.net/";
       setSelectedNetwork(url);
     }
@@ -123,8 +134,9 @@ export default function Verify() {
 
   // Drop-down menu handling for selected Mint ID
   // example source from here: https://www.kindacode.com/article/react-typescript-handling-select-onchange-event/ 
-  const selectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectChange = (event: SelectChangeEvent<unknown>) => {
     const value = event.target.value;
+    // @ts-expect-error
     setselectedMint(value);
   };
 
@@ -148,6 +160,11 @@ export default function Verify() {
     };
   }
 
+  function urlify(input: string, network: string) {
+    const output = 'https://solscan.io/account/' + input + '?cluster=' + network;
+    return output;
+  }
+
   const handleMetadata = async () => {    
     const mintId = new PublicKey(selectedMint || '') 
     const metadata = getMetadataByMint(mintId);
@@ -161,6 +178,7 @@ export default function Verify() {
       
     setName(name);
     setImage(external.image);
+    setNFTUrl(urlify(mintId.toString(), selectedNetworkShortName));
     setMintMetadata(uri);
   
     const attributes = external.attributes; // BUG: need to handle where attributes is undefined
@@ -304,7 +322,7 @@ export default function Verify() {
   return (
     <div className="body">
         <div className="text">
-          <h1 style={{color: '#FFFFFF'}}>{`{ Verify }`}</h1>
+          <h1>{`{ Verify }`}</h1>
             <h3>Microtitle Verification Sequence:</h3>
             The app compares the QR code signature of your physical item with corresponding signing data contained within the NFT's metadata--the bonding keypair public key and associated message. 
             Steps: 1) Connect your wallet containing the NFT "microtitle" you want to verify. 2) Select the appropriate network, 3) click "get mints" button, 4) select the Mint ID of relevant NFT, 5) confirm the NFT displayed matches your selection, 6) use a webcam to scan the QR code signature
@@ -316,32 +334,24 @@ export default function Verify() {
             { pubkey ? (
                     <TableBody>
                       <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                        <TableCell component="th" scope="row">Connected wallet:</TableCell>
-                        <TableCell align="right">{pubkey?.toString()}</TableCell>
-                      </TableRow>
-                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                        <TableCell component="th" scope="row">Select a network:</TableCell>
-                        <TableCell align="right">                          
-                            <select 
-                                id="selectNetworkId"
-                                onChange={selectNetwork}
+                        <TableCell component="th" scope="row">                        
+                          <FormControl sx={{ m: 1, width: 225 }}>
+                            <InputLabel id="network-select-label">Network</InputLabel>
+                            <Select
+                              labelId="select-network-id"
+                              variant="outlined"
+                              id="selectNetworkId"
+                              label="Network"
+                              onChange={selectNetwork}
                             >
-                              <option selected disabled>SELECT NETWORK</option>
-                              <option value={"gengo-mainnet"}>GenesysGo Mainnet</option>
-                              <option value={"gengo-devnet"}>GenesysGo Devnet</option>
-                              <option value={"devnet"}>devnet</option>
-                              <option value={"mainnet-beta"}>mainnet-beta</option>
-                              <option value={"testnet"}>testnet</option>
-                            </select>
+                              <MenuItem value={"gengo-mainnet"}>GenesysGo Mainnet</MenuItem>
+                              <MenuItem value={"gengo-devnet"}>GenesysGo Devnet</MenuItem>
+                              <MenuItem value={"mainnet-beta"}>Mainnet-beta</MenuItem>
+                              <MenuItem value={"devnet"}>Devnet</MenuItem>
+                            </Select>
+                          </FormControl> 
                         </TableCell>
-                      </TableRow>
-                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                        <TableCell component="th" scope="row">Selected network:</TableCell>
-                      { selectedNetwork ? (
                         <TableCell align="right">{selectedNetwork}</TableCell>
-                        ) : (
-                          <TableCell align="right">N/A</TableCell>
-                        )}
                       </TableRow>
                       <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                         <TableCell component="th" scope="row">Find wallet mint IDs:</TableCell>
@@ -350,10 +360,18 @@ export default function Verify() {
                       <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                         <TableCell component="th" scope="row">Connected mints:</TableCell>
                         <TableCell align="right">
-                            <select id="selectMintId" onChange={selectChange}>
-                              <option selected disabled>SELECT MINT ID TO VERIFY</option>
-                              { accountMints.map(item => <option value={item}> {item} </option>)}
-                            </select>
+                          <FormControl sx={{ m: 1, width: 225 }}>
+                            <InputLabel id="mint-select-label">Mint ID</InputLabel>
+                            <Select
+                              labelId="select-mint-id"
+                              variant="outlined"
+                              id="selectMintId"
+                              label="Mint ID"
+                              onChange={selectChange}
+                            >
+                              { accountMints.map(item => <MenuItem value={item}>{item}</MenuItem>)}
+                            </Select>
+                          </FormControl>       
                         </TableCell>
                       </TableRow>
                       <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -384,7 +402,7 @@ export default function Verify() {
                             <TableBody>
                                 <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                   <TableCell component="th" scope="row"><b><a href={mintMetadata} target="_blank">{ curName }</a></b></TableCell>
-                                  <TableCell align="right"><b><a href={curImage} target="_blank"><img src={curImage} className='nft'/></a></b> </TableCell>
+                                  <TableCell align="right"><b><a href={NFTUrl} target="_blank"><img src={curImage} className='nft'/></a></b> </TableCell>
                                 </TableRow>
                                 <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                   <TableCell component="th" scope="row"><b>Atttributes:</b></TableCell>

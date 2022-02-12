@@ -13,7 +13,7 @@ function Home() {
     return (
         <div className="body" style={{minWidth: '60%'}}>
             <div className='text' >
-                <h1 style={{color: '#FFFFFF'}}>{`{ Crosslink Protocol }`}</h1>
+                <h1>{`{ Crosslink Protocol }`}</h1>
                 NFT titles for durable goods, secured by the Solana blockchain.
                     <h2>How does it work?</h2>
                     <TableContainer component={Paper}>

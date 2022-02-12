@@ -14,7 +14,7 @@ function Mint() {
     return (
         <div className="body">
             <div className="text">
-                <h1 style={{color: '#FFFFFF'}}>{`{ Mint }`}</h1>
+                <h1>{`{ Mint }`}</h1>
                 <h2>COMING SOON&#8482;</h2>
                 <Container>
                     <div>

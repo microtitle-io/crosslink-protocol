@@ -90,7 +90,7 @@ function Sign() {
   return (  
       <div className="body" style={{minWidth: '80%'}}>
           <div className="text">
-              <h1 style={{color: '#FFFFFF'}}>{`{ Sign }`}</h1>
+              <h1>{`{ Sign }`}</h1>
               <div className="text">
                   This section is used to generate a signature that is permanently attached to or embedded on your item. 
                   To do this, you must first create a unique "bonding" keypair. Next, connect the keypair using your wallet, enter a message and click "sign message." <br/>
