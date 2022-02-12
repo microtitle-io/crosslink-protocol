@@ -9,6 +9,15 @@ import TableContainer from '@mui/material/TableContainer/TableContainer';
 import TableHead from '@mui/material/TableHead/TableHead';
 import TableRow from '@mui/material/TableRow/TableRow';
 import Paper from '@mui/material/Paper/Paper';
+import Select from '@mui/material/Select/Select';
+import MenuItem from '@mui/material/MenuItem/MenuItem';
+import { SelectChangeEvent } from "@mui/material";
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+
+// const handleOnChange = (event: SelectChangeEvent<unknown>) => {
+//  const value = event.target.value as YourEnumType;
+// };
 
 import {
   Connection,
@@ -50,26 +59,30 @@ function Register() {
   const program = new anchor.Program(idl, MICROTITLE_PROGRAM_ID, provider);
     
   // Select the network to draw on-chain data from:
-  const selectNetwork = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectNetwork = (event: SelectChangeEvent<unknown>) => {
     const value = event.target.value;
-    setSelectedNetworkShortName(value);
     if (value === "devnet") {
-    const url = clusterApiUrl("devnet");
+      setSelectedNetworkShortName(value);
+      const url = clusterApiUrl("devnet");
       setSelectedNetwork(url);
     }
     else if (value === "mainnet-beta") {
+      setSelectedNetworkShortName(value);
       const url = clusterApiUrl("mainnet-beta");
       setSelectedNetwork(url);
     }
-    else if (value === "testnet") {
-      const url = clusterApiUrl("testnet");
-      setSelectedNetwork(url);
-    }
+    // else if (value === "testnet") {
+      // setSelectedNetworkShortName(value);
+      // const url = clusterApiUrl("testnet");
+      // setSelectedNetwork(url);
+    // }
     else if (value === "gengo-devnet") {
+      setSelectedNetworkShortName("devnet");
       const url = "https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899/";
       setSelectedNetwork(url);
     }
     else if (value === "gengo-mainnet") {
+      setSelectedNetworkShortName("mainnet-beta");
       const url = "https://ssc-dao.genesysgo.net/";
       setSelectedNetwork(url);
     }
@@ -146,7 +159,7 @@ function Register() {
   }
 
   // Select the registration search type:
-  const setSearchType = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const setSearchType = (event: SelectChangeEvent<unknown>) => {
     const value = event.target.value;
     if (value === "bkey") {
       setSearchIndex(48);
@@ -227,13 +240,13 @@ function Register() {
   return (  
       <div className="body" style={{minWidth: '80%'}}>
           <div className="text">
-              <h1 style={{color: '#FFFFFF'}}>{`{ Register }`}</h1>
+              <h1>{`{ Register }`}</h1>
               <div className="text">
                   The final step in securing a microtitle is to use this page to create an on-chain Register entry that ties the NFT microtitle to the real-world asset's bonding key. <br/>
                   <br/>
                   { pubkey ? (
                       <div>
-                          <TableContainer component={Paper}>
+                          <TableContainer component={Paper} elevation={3}>
                             <Table sx={{ minWidth: 650 }}  aria-label="register table">
                               <TableBody>
                                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -243,18 +256,22 @@ function Register() {
                                     {/* <TableCell component="th" scope="row"> <div>{pubkey}</div> </TableCell> */}
                                   </TableRow>
                                   <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    <TableCell align="left">                          
-                                        <select 
-                                            id="selectNetworkId"
-                                            onChange={selectNetwork}
+                                    <TableCell align="left">
+                                      <FormControl sx={{ m: 1, width: 225 }}>
+                                        <InputLabel id="network-select-label">Network</InputLabel>
+                                        <Select
+                                          labelId="select-network-id"
+                                          variant="outlined"
+                                          id="selectNetworkId"
+                                          label="Network"
+                                          onChange={selectNetwork}
                                         >
-                                          <option selected disabled>SELECT NETWORK</option>
-                                          <option value={"gengo-mainnet"}>GenesysGo Mainnet</option>
-                                          <option value={"gengo-devnet"}>GenesysGo Devnet</option>
-                                          <option value={"devnet"}>devnet</option>
-                                          <option value={"mainnet-beta"}>mainnet-beta</option>
-                                          <option value={"testnet"}>testnet</option>
-                                        </select>
+                                          <MenuItem value={"gengo-mainnet"}>GenesysGo Mainnet</MenuItem>
+                                          <MenuItem value={"gengo-devnet"}>GenesysGo Devnet</MenuItem>
+                                          <MenuItem value={"mainnet-beta"}>Mainnet-beta</MenuItem>
+                                          <MenuItem value={"devnet"}>Devnet</MenuItem>
+                                        </Select>
+                                      </FormControl>                          
                                     </TableCell>
                                     <TableCell component="th" scope="row"></TableCell>
                                     <TableCell component="th" scope="row" align="right">{selectedNetwork}</TableCell>
@@ -302,16 +319,21 @@ function Register() {
                               <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row">Search for a registration:</TableCell>
                                 <TableCell align="left">                          
-                                        <select 
-                                            id="selectSearchType"
-                                            onChange={setSearchType}
-                                        >
-                                          <option selected disabled>SEARCH REGISTRATION BY:</option>
-                                          <option value={"bkey"}>bonding key</option>
-                                          <option value={"mint"}>mint ID</option>
-                                          <option value={"author"}>author</option>
-                                        </select>
-                                    </TableCell>
+                                  <FormControl sx={{ m: 1, width: 225 }}>
+                                    <InputLabel id="network-select-label">Search By</InputLabel>
+                                    <Select
+                                      labelId="select-search-type-id"
+                                      label="Search By"
+                                      variant="outlined"
+                                      id="selectSearchType"
+                                      onChange={setSearchType}
+                                    >
+                                      <MenuItem value={"bkey"}>Bonding Key</MenuItem>
+                                      <MenuItem value={"mint"}>Mint ID</MenuItem>
+                                      <MenuItem value={"author"}>Author</MenuItem>
+                                    </Select>
+                                    </FormControl> 
+                                  </TableCell>
                                 <TableCell component="th" scope="row"><TextField id="outlined-basic" label="value" variant="outlined" value={searchValue} onChange={(e) => setSearchValue(e.target.value.trim())} /></TableCell>
                                 <TableCell component="th" scope="row"></TableCell>
                                 <TableCell align="right"><Button onClick={search}>Search</Button></TableCell>

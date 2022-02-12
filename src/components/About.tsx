@@ -2,7 +2,7 @@ function About() {
     return (
         <div className="body">
             <div className="text">
-                <h1 style={{color: '#FFFFFF'}}>{`{ About }`}</h1>
+                <h1>{`{ About }`}</h1>
                 Crosslink Protocol is an open-source system for creating NFT titles that are incontrovertibly linked to physical items, secured on the Solana blockchain.
                 <div>
                     <ul className="resources">

@@ -166,7 +166,8 @@ a:visited {
   align-content: center;
   margin-left: auto;
   margin-right: auto;
-  color: white;
+  /* color: #7C77B9 */
+  color: rgb(231, 230, 230);
 }
 
 .resources {
@@ -181,6 +182,10 @@ a:visited {
   color: #2e3472;
   /* color: #6170fb; */
   text-decoration: none;
+}
+
+h1 {
+  color: rgb(0, 182, 136);
 }
 
 .footer {
